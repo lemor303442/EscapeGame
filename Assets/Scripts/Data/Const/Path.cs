@@ -18,8 +18,8 @@ namespace Const
         }
         public static class GameData
         {
-            public static readonly string userItem = "Locals/Csv/GameData/UserItem.json";
-            public static readonly string userParameter = "Locals/Csv/GameData/UserParameter.json";
+            public static readonly string userItem = "Locals/Csv/GameData/UserItem.csv";
+            public static readonly string userParameter = "Locals/Csv/GameData/UserParameter.csv";
         }
 
         static Path()
