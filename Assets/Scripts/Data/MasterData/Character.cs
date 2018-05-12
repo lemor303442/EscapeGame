@@ -7,17 +7,24 @@ public class Character
     public string Pattern { get; private set; }
     public string Pivot { get; private set; }
     public string FilePath { get; private set; }
+    public int PosX { get; private set; }
+    public int PosY { get; private set; }
+    public int PosZ { get; private set; }
 
-    public Character(int _id, string _name, string _pattern, string _pivot, string _filePath)
+    public Character(int _id, string _name, string _pattern, string _pivot, string _filePath, int _posX, int _posY, int _posZ)
     {
+        Validation(_id, _name, _pattern, _pivot, _filePath, _posX, _posY, _posY);
         Id = _id;
         Name = _name;
         Pattern = _pattern;
         Pivot = _pivot;
         FilePath = _filePath;
+        PosX = _posX;
+        PosY = _posY;
+        PosZ = _posZ;
     }
 
-    private void Validation(int _id, string _name, string _pattern, string _pivot, string _filePath)
+    private void Validation(int _id, string _name, string _pattern, string _pivot, string _filePath, int _posX, int _posY, int _posZ)
     {
         if (string.IsNullOrEmpty(_name))
             Debug.LogError("Character Validation Error at [" + _id.ToString() + ".Name]\n" +
