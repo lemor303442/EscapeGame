@@ -5,7 +5,7 @@ using UnityEngine.UI;
 /// <summary>
 /// 文字のアニメーション
 /// </summary>
-public class TextHelper
+public class TextComponentHelper
 {
 	Text uiText;
 
@@ -17,7 +17,7 @@ public class TextHelper
 
 
 
-	public TextHelper (Text _uiText)
+	public TextComponentHelper (Text _uiText)
 	{
 		uiText = _uiText;
 	}

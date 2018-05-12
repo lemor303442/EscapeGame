@@ -8,7 +8,7 @@ public class StorySceneController : MonoBehaviour
     public StorySceneViewController viewController;
     ScenarioManager scenarioManager;
     EscapeManager escapeManager;
-    TextHelper textHelper;
+    TextComponentHelper textHelper;
 
     bool isDataReady = false;
     bool isClickable = true;
@@ -28,7 +28,7 @@ public class StorySceneController : MonoBehaviour
         escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         viewController.Init();
         scenarioManager.Init();
-        textHelper = new TextHelper(viewController.contentText);
+        textHelper = new TextComponentHelper(viewController.contentText);
 
         if (isDataReady) scenarioManager.Next();
     }
