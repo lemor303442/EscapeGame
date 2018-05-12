@@ -206,7 +206,7 @@ public class ScenarioManager : MonoBehaviour
         return breakLoop;
     }
 
-    void JumpTo(string dest)
+    public void JumpTo(string dest)
     {
         scenarioId = ScenarioRepository.FindByCommand(dest).Id;
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class EscapeManager : MonoBehaviour
@@ -10,7 +11,6 @@ public class EscapeManager : MonoBehaviour
     public void Init()
     {
         sceneController = GameObject.FindObjectOfType<StorySceneController>();
-        availableInputList = new List<EscapeInput>();
     }
 
     public void ToEscape(string escapeSceneName)
@@ -32,7 +32,8 @@ public class EscapeManager : MonoBehaviour
             if (conditionList == null) continue;
             foreach (string condition in conditionList)
             {
-                if (!ConditionHelper.IsConditionValid(condition)) {
+                if (!ConditionHelper.IsConditionValid(condition))
+                {
                     removeIds.Add(escapeInput.Id);
                     break;
                 }
@@ -47,7 +48,23 @@ public class EscapeManager : MonoBehaviour
 
     public void OnClick(Vector2 clickPos)
     {
-
+        foreach (EscapeInput escapeInput in availableInputList)
+        {
+            if(IsInsideOfTarget(escapeInput, clickPos)){
+                if(Regex.IsMatch(escapeInput.JumpTo, @"^\*")){
+                    sceneController.ChangeToScenarioMode(escapeInput.JumpTo);
+                }else{
+                    ToEscape(escapeInput.JumpTo);
+                }
+                break;
+            }
+        }
     }
 
+    bool IsInsideOfTarget(EscapeInput escapeInput, Vector2 pos)
+    {
+        bool isInX = pos.x >= escapeInput.PosX && pos.x <= escapeInput.PosX + escapeInput.Width;
+        bool isInY = pos.y >= escapeInput.PosY && pos.y <= escapeInput.PosY + escapeInput.Height;
+        return isInX && isInY;
+    }
 }

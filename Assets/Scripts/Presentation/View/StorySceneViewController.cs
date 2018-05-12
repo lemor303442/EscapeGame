@@ -28,18 +28,20 @@ public class StorySceneViewController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            sceneController.OnClick();
+            sceneController.OnClick(TouchInput.position);
         }
     }
 
     public void ToggleNamePanelIsActive(bool flg)
     {
         namePanel.SetActive(flg);
+        nameText.text = "";
     }
 
     public void ToggleContentPanelIsActive(bool flg)
     {
         contentPanel.SetActive(flg);
+        contentText.text = "";
     }
 
     public void UpdateNameText(string name)

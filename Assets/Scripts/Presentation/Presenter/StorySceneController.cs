@@ -7,6 +7,7 @@ public class StorySceneController : MonoBehaviour
     [HideInInspector]
     public StorySceneViewController viewController;
     ScenarioManager scenarioManager;
+    EscapeManager escapeManager;
     TextHelper textHelper;
 
     bool isDataReady = false;
@@ -24,6 +25,7 @@ public class StorySceneController : MonoBehaviour
         }
         viewController = GameObject.FindObjectOfType<StorySceneViewController>();
         scenarioManager = GameObject.FindObjectOfType<ScenarioManager>();
+        escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         viewController.Init();
         scenarioManager.Init();
         textHelper = new TextHelper(viewController.contentText);
@@ -36,9 +38,10 @@ public class StorySceneController : MonoBehaviour
         if (isDataReady) textHelper.Update();
     }
 
-    public void OnClick()
+    public void OnClick(Vector2 touchPos)
     {
         if (isEscapeMode) {
+            escapeManager.OnClick(touchPos);
             return;
         }
         if (isClickable)
@@ -95,11 +98,13 @@ public class StorySceneController : MonoBehaviour
         viewController.ToggleContentPanelIsActive(false);
     }
 
-    public void ChangeToScenarioMode()
+    public void ChangeToScenarioMode(string dest)
     {
         isEscapeMode = false;
         viewController.ToggleNamePanelIsActive(true);
         viewController.ToggleContentPanelIsActive(true);
+        scenarioManager.JumpTo(dest);
+        scenarioManager.Next();
     }
 
 }
