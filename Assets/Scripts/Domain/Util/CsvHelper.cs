@@ -39,8 +39,7 @@ public static class CsvHelper
                             + item.Pivot + ","
                             + item.FilePath + ","
                             + item.PosX.ToString() + ","
-                            + item.PosY.ToString() + ","
-                            + item.PosZ.ToString();
+                            + item.PosY.ToString();
             csvSring += "\n";
         }
         return csvSring.Remove(csvSring.Length - 1);
