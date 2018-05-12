@@ -15,7 +15,7 @@ public class ScenarioManager : MonoBehaviour
     ImageManager imageManager;
     ItemManager itemManager;
     ParamManager paramManager;
-    ConditionManager conditionManager;
+    EscapeManager escapeManager;
     int scenarioId = 0;
 
     public void Init()
@@ -26,7 +26,8 @@ public class ScenarioManager : MonoBehaviour
         imageManager.Init();
         itemManager = GameObject.FindObjectOfType<ItemManager>();
         paramManager = GameObject.FindObjectOfType<ParamManager>();
-        conditionManager = GameObject.FindObjectOfType<ConditionManager>();
+        escapeManager = GameObject.FindObjectOfType<EscapeManager>();
+        escapeManager.Init();
     }
 
     public void Next()
@@ -90,14 +91,13 @@ public class ScenarioManager : MonoBehaviour
                 foreach (Scenario selection in selectionList)
                 {
                     if (string.IsNullOrEmpty(selection.Arg2)) continue;
-                    string[] conditions = selection.Arg2.Split('&');
-                    if (string.IsNullOrEmpty(conditions[0])) conditions[0] = selection.Arg2;
-                    foreach (string condition in conditions)
+                    List<string> conditionList = ConditionHelper.GetConditions(selection.Arg2);
+                    if (conditionList == null) continue;
+                    foreach (string condition in conditionList)
                     {
-                        // ToDo: アイテムを所持しているかどうかでも条件を判定できるようにする。
-                        if (!conditionManager.IsConditionValid(condition)) {
+                        if (!ConditionHelper.IsConditionValid(condition)) {
                             removeSelectionId.Add(selection.Id);
-                            continue;
+                            break;
                         }
                     }
                 }
@@ -192,6 +192,12 @@ public class ScenarioManager : MonoBehaviour
                 paramManager.UpdateParam(scenario.Arg1);
                 scenarioId++;
                 break;
+            case "ToEscape":
+                Debug.Log("Command: [ToEspace]");
+                sceneController.ChangeToEscapeMode();
+                escapeManager.ToEscape(scenario.Arg1);
+                breakLoop = true;
+                break;
             default:
                 Debug.LogWarning("Unkown command [" + scenario.Command + "]");
                 breakLoop = true;
@@ -200,7 +206,7 @@ public class ScenarioManager : MonoBehaviour
         return breakLoop;
     }
 
-    void JumpTo(string dest)
+    public void JumpTo(string dest)
     {
         scenarioId = ScenarioRepository.FindByCommand(dest).Id;
     }

@@ -7,11 +7,14 @@ public class StorySceneViewController : MonoBehaviour
     StorySceneController sceneController;
 
     [SerializeField] GameObject emptyObject;
-    [SerializeField] public Text nameText;
+    [SerializeField] Text nameText;
     [SerializeField] public Text contentText;
     [SerializeField] GameObject[] selectionButtons = new GameObject[3];
     [SerializeField] Text[] selectionTexts = new Text[3];
     [SerializeField] Transform layerTarget;
+    [SerializeField] GameObject namePanel;
+    [SerializeField] GameObject contentPanel;
+    [SerializeField] Image escapeBackground;
 
     public int NumOfSelectionButtons { get { return selectionButtons.Length; } }
 
@@ -25,8 +28,20 @@ public class StorySceneViewController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            sceneController.OnClick();
+            sceneController.OnClick(TouchInput.position);
         }
+    }
+
+    public void ToggleNamePanelIsActive(bool flg)
+    {
+        namePanel.SetActive(flg);
+        nameText.text = "";
+    }
+
+    public void ToggleContentPanelIsActive(bool flg)
+    {
+        contentPanel.SetActive(flg);
+        contentText.text = "";
     }
 
     public void UpdateNameText(string name)
@@ -61,6 +76,20 @@ public class StorySceneViewController : MonoBehaviour
         {
             image.sprite = sprite;
             image.enabled = true;
+        }
+    }
+
+    public void UpdateEscapeBackground(Sprite sprite)
+    {
+        if (sprite == null)
+        {
+            escapeBackground.sprite = null;
+            escapeBackground.enabled = false;
+        }
+        else
+        {
+            escapeBackground.sprite = sprite;
+            escapeBackground.enabled = true;
         }
     }
 

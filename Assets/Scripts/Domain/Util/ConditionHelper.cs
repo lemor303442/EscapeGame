@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConditionManager : MonoBehaviour
+public class ConditionHelper
 {
-    public bool IsConditionValid(string formula)
+    public static bool IsConditionValid(string formula)
     {
         formula = formula.Replace(" ", "");
         List<string> formulaList = FormulaHelper.FormatFormula(formula);
@@ -38,5 +38,18 @@ public class ConditionManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public static List<string> GetConditions(string condition)
+    {
+        if (string.IsNullOrEmpty(condition)) return null;
+        condition = condition.Replace(" ", "");
+        string[] array = condition.Split('&');
+        List<string> list = new List<string>();
+        foreach (var str in array)
+        {
+            list.Add(str);
+        }
+        return list;
     }
 }
