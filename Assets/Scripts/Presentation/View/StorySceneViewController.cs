@@ -70,6 +70,16 @@ public class StorySceneViewController : MonoBehaviour
         layerObj.GetComponent<VerticalLayoutGroup>().childAlignment = textAnchor;
     }
 
+    public void UpdatePadding(Layer layer, Character character)
+    {
+        GameObject layerObj = FindLayer(layer);
+        VerticalLayoutGroup group = layerObj.GetComponent<VerticalLayoutGroup>();
+        group.padding.left = character.PosX;
+        group.padding.right = -character.PosX;
+        group.padding.bottom = character.PosY;
+        group.padding.top = -character.PosY;
+    }
+
     public void UpdateLayerImageSize(Layer layer, Vector2 size)
     {
         Image image = FindLayerImage(layer);
