@@ -11,6 +11,7 @@ public class StorySceneController : MonoBehaviour
 
     bool isDataReady = false;
     bool isClickable = true;
+    bool isEscapeMode = false;
 
     void Start()
     {
@@ -37,6 +38,9 @@ public class StorySceneController : MonoBehaviour
 
     public void OnClick()
     {
+        if (isEscapeMode) {
+            return;
+        }
         if (isClickable)
         {
             if (textHelper.IsCompleteDisplayText)
@@ -83,4 +87,19 @@ public class StorySceneController : MonoBehaviour
         scenarioManager.OnSelectionSelected(index);
         isClickable = true;
     }
+
+    public void ChangeToEscapeMode()
+    {
+        isEscapeMode = true;
+        viewController.ToggleNamePanelIsActive(false);
+        viewController.ToggleContentPanelIsActive(false);
+    }
+
+    public void ChangeToScenarioMode()
+    {
+        isEscapeMode = false;
+        viewController.ToggleNamePanelIsActive(true);
+        viewController.ToggleContentPanelIsActive(true);
+    }
+
 }

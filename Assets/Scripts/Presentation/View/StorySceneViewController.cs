@@ -14,6 +14,7 @@ public class StorySceneViewController : MonoBehaviour
     [SerializeField] Transform layerTarget;
     [SerializeField] GameObject namePanel;
     [SerializeField] GameObject contentPanel;
+    [SerializeField] Image escapeBackground;
 
     public int NumOfSelectionButtons { get { return selectionButtons.Length; } }
 
@@ -73,6 +74,20 @@ public class StorySceneViewController : MonoBehaviour
         {
             image.sprite = sprite;
             image.enabled = true;
+        }
+    }
+
+    public void UpdateEscapeBackground(Sprite sprite)
+    {
+        if (sprite == null)
+        {
+            escapeBackground.sprite = null;
+            escapeBackground.enabled = false;
+        }
+        else
+        {
+            escapeBackground.sprite = sprite;
+            escapeBackground.enabled = true;
         }
     }
 

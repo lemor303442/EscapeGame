@@ -16,6 +16,7 @@ public class ScenarioManager : MonoBehaviour
     ItemManager itemManager;
     ParamManager paramManager;
     ConditionManager conditionManager;
+    EscapeManager escapeManager;
     int scenarioId = 0;
 
     public void Init()
@@ -27,6 +28,8 @@ public class ScenarioManager : MonoBehaviour
         itemManager = GameObject.FindObjectOfType<ItemManager>();
         paramManager = GameObject.FindObjectOfType<ParamManager>();
         conditionManager = GameObject.FindObjectOfType<ConditionManager>();
+        escapeManager = GameObject.FindObjectOfType<EscapeManager>();
+        escapeManager.Init();
     }
 
     public void Next()
@@ -191,6 +194,12 @@ public class ScenarioManager : MonoBehaviour
                 Debug.Log("Command: [Param]");
                 paramManager.UpdateParam(scenario.Arg1);
                 scenarioId++;
+                break;
+            case "ToEscape":
+                Debug.Log("Command: [ToEspace]");
+                sceneController.ChangeToEscapeMode();
+                escapeManager.ToEscape(scenario.Arg1);
+                breakLoop = true;
                 break;
             default:
                 Debug.LogWarning("Unkown command [" + scenario.Command + "]");
