@@ -94,7 +94,7 @@ public class FormulaHelper
 
     public static bool GetBoolValue(string value)
     {
-        if (Regex.IsMatch(value, @"(?:F(?:ALSE|lase)|(?:flas|tru)e|T(?:RUE|rue))")) return Convert.ToBoolean(value);
+        if (Regex.IsMatch(value, @"(?:F(?:ALSE|alse)|(?:fals|tru)e|T(?:RUE|rue))")) return Convert.ToBoolean(value);
         else return Convert.ToBoolean(ParameterEntity.FindByParameterName(value).UserParameter.Value);
     }
 }
