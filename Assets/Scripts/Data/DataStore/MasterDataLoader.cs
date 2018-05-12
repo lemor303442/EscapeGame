@@ -42,7 +42,7 @@ public class MasterDataLoader
                 foreach (string[] data in csvDataList)
                 {
                     if (data == csvDataList[0]) continue;
-                    dataSet.CharacterList.Add(new Character(int.Parse(data[0]), data[1], data[2], data[3], data[4]));
+                    dataSet.CharacterList.Add(new Character(int.Parse(data[0]), data[1], data[2], data[3], data[4], int.Parse(data[5]), int.Parse(data[6])));
                 }
                 break;
             case DataType.ESCAPE_INPUT:
