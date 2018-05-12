@@ -15,7 +15,6 @@ public class ScenarioManager : MonoBehaviour
     ImageManager imageManager;
     ItemManager itemManager;
     ParamManager paramManager;
-    ConditionManager conditionManager;
     EscapeManager escapeManager;
     int scenarioId = 0;
 
@@ -27,7 +26,6 @@ public class ScenarioManager : MonoBehaviour
         imageManager.Init();
         itemManager = GameObject.FindObjectOfType<ItemManager>();
         paramManager = GameObject.FindObjectOfType<ParamManager>();
-        conditionManager = GameObject.FindObjectOfType<ConditionManager>();
         escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         escapeManager.Init();
     }
@@ -93,14 +91,13 @@ public class ScenarioManager : MonoBehaviour
                 foreach (Scenario selection in selectionList)
                 {
                     if (string.IsNullOrEmpty(selection.Arg2)) continue;
-                    string[] conditions = selection.Arg2.Split('&');
-                    if (string.IsNullOrEmpty(conditions[0])) conditions[0] = selection.Arg2;
-                    foreach (string condition in conditions)
+                    List<string> conditionList = ConditionHelper.GetConditions(selection.Arg2);
+                    if (conditionList == null) continue;
+                    foreach (string condition in conditionList)
                     {
-                        // ToDo: アイテムを所持しているかどうかでも条件を判定できるようにする。
-                        if (!conditionManager.IsConditionValid(condition)) {
+                        if (!ConditionHelper.IsConditionValid(condition)) {
                             removeSelectionId.Add(selection.Id);
-                            continue;
+                            break;
                         }
                     }
                 }
