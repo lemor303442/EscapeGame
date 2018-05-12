@@ -58,8 +58,7 @@ public static class CsvHelper
                             + item.PosY.ToString() + ","
                             + item.Width.ToString() + ","
                             + item.Height.ToString() + ","
-                            + EscapeInput.FormatListToString(item.Items) + ","
-                            + EscapeInput.FormatListToString(item.Conditions);
+                            + item.Conditions;
             csvSring += "\n";
         }
         return csvSring.Remove(csvSring.Length - 1);
