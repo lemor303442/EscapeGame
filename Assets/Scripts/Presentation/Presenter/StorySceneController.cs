@@ -52,13 +52,13 @@ public class StorySceneController : MonoBehaviour
 
     public void ShowNextText(string name, string content)
     {
-        viewController.nameText.text = name;
+        viewController.UpdateNameText(name);
         textHelper.SetNextLine(content);
     }
 
     public void ShowNextText(string name, string content, float speed)
     {
-        viewController.nameText.text = name;
+        viewController.UpdateNameText(name);
         textHelper.SetNextLine(content, speed);
     }
 

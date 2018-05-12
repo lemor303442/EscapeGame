@@ -7,11 +7,13 @@ public class StorySceneViewController : MonoBehaviour
     StorySceneController sceneController;
 
     [SerializeField] GameObject emptyObject;
-    [SerializeField] public Text nameText;
+    [SerializeField] Text nameText;
     [SerializeField] public Text contentText;
     [SerializeField] GameObject[] selectionButtons = new GameObject[3];
     [SerializeField] Text[] selectionTexts = new Text[3];
     [SerializeField] Transform layerTarget;
+    [SerializeField] GameObject namePanel;
+    [SerializeField] GameObject contentPanel;
 
     public int NumOfSelectionButtons { get { return selectionButtons.Length; } }
 
@@ -27,6 +29,16 @@ public class StorySceneViewController : MonoBehaviour
         {
             sceneController.OnClick();
         }
+    }
+
+    public void ToggleNamePanelIsActive(bool flg)
+    {
+        namePanel.SetActive(flg);
+    }
+
+    public void ToggleContentPanelIsActive(bool flg)
+    {
+        contentPanel.SetActive(flg);
     }
 
     public void UpdateNameText(string name)
