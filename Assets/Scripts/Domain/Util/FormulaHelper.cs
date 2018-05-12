@@ -2,17 +2,37 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-public class FormulaHelper {
+public class FormulaHelper
+{
 
     public static List<string> FormatFormula(string formula)
     {
         formula = formula.Replace(" ", "");
         List<string> strList = new List<string>();
 
-        string leftSide = formula.Split(Const.Operator.equal)[0];
-        string rightSide = formula.Split(Const.Operator.equal)[1];
-        strList.Add(leftSide);
-        strList.Add(Const.Operator.equal.ToString());
+        string leftSide = "";
+        string rightSide = "";
+        if (formula.IndexOf(Const.Operator.equal) != -1)
+        {
+            leftSide = formula.Split(Const.Operator.equal)[0];
+            rightSide = formula.Split(Const.Operator.equal)[1];
+            strList.Add(leftSide);
+            strList.Add(Const.Operator.equal.ToString());
+        }
+        else if (formula.IndexOf(Const.Operator.lessThan) != -1)
+        {
+            leftSide = formula.Split(Const.Operator.lessThan)[0];
+            rightSide = formula.Split(Const.Operator.lessThan)[1];
+            strList.Add(leftSide);
+            strList.Add(Const.Operator.lessThan.ToString());
+        }
+        else if (formula.IndexOf(Const.Operator.greaterThan) != -1)
+        {
+            leftSide = formula.Split(Const.Operator.greaterThan)[0];
+            rightSide = formula.Split(Const.Operator.greaterThan)[1];
+            strList.Add(leftSide);
+            strList.Add(Const.Operator.greaterThan.ToString());
+        }
 
         if (rightSide.IndexOf(Const.Operator.plus) != -1)
         {

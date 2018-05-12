@@ -53,6 +53,7 @@ public class ImageManager : MonoBehaviour
         Sprite image = Resources.Load<Sprite>(character.FilePath);
         sceneController.viewController.UpdateLayerImage(layer, image);
         // Imageのサイズを調整
+        Debug.Log(image);
         float imageRatio = image.rect.height / image.rect.width;
         Vector2 size = new Vector2(layer.Width, layer.Width * imageRatio);
         if (size.y > layer.Height) size = new Vector2(size.x, layer.Height);
