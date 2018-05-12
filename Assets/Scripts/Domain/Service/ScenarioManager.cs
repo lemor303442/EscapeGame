@@ -94,7 +94,7 @@ public class ScenarioManager : MonoBehaviour
                     if (string.IsNullOrEmpty(conditions[0])) conditions[0] = selection.Arg2;
                     foreach (string condition in conditions)
                     {
-                        Debug.Log(conditionManager.IsConditionValid(condition));
+                        // ToDo: アイテムを所持しているかどうかでも条件を判定できるようにする。
                         if (!conditionManager.IsConditionValid(condition)) {
                             removeSelectionId.Add(selection.Id);
                             continue;
