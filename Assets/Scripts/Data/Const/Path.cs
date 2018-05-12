@@ -8,7 +8,7 @@ namespace Const
         public static readonly string ablsolutePath;
         public static class MasterData
         {
-            public static readonly string character = "Locals/Csv/MasterData/Character.csv";
+            public static readonly string character = "Locals/Csv/MasterData/Characters.csv";
             public static readonly string escapeInput = "Locals/Csv/MasterData/EscapeInputs.csv";
             public static readonly string escapeScene = "Locals/Csv/MasterData/EscapeScenes.csv";
             public static readonly string item = "Locals/Csv/MasterData/Items.csv";

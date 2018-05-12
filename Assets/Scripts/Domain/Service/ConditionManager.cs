@@ -15,7 +15,8 @@ public class ConditionManager : MonoBehaviour
         }
         else
         {
-            switch(formulaList[1]){
+            switch (formulaList[1])
+            {
                 case "=":
                     return FormulaHelper.GetIntValue(formulaList[0]) == FormulaHelper.GetIntValue(formulaList[2]);
                 case "<":
