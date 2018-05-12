@@ -15,25 +15,8 @@ public class ScenarioManager : MonoBehaviour
     ImageManager imageManager;
     ItemManager itemManager;
     ParamManager paramManager;
+    ConditionManager conditionManager;
     int scenarioId = 0;
-
-    //[SerializeField] AudioSource bgm;
-    //[SerializeField] AudioSource ambience;
-    //[SerializeField] AudioSource soundEffect;
-
-    //void Start ()
-    //{
-    //	scenario = FindObjectOfType<Scenario> ();
-    //	// シナリオのダウンロードが完了してなければ、Startシーンへ
-    //	if (!scenario.isDownloadComplete) {
-    //		SceneManager.LoadScene ("Start");
-    //		Debug.LogWarning ("Scenario not downloaded");
-    //		return;
-    //	}
-    //	textHelper = new TextHelper (contentText);
-    //	SetUpCharacterLayers ();
-    //	NextCommand ();
-    //}
 
     public void Init()
     {
@@ -43,6 +26,7 @@ public class ScenarioManager : MonoBehaviour
         imageManager.Init();
         itemManager = GameObject.FindObjectOfType<ItemManager>();
         paramManager = GameObject.FindObjectOfType<ParamManager>();
+        conditionManager = GameObject.FindObjectOfType<ConditionManager>();
     }
 
     public void Next()
@@ -100,8 +84,17 @@ public class ScenarioManager : MonoBehaviour
                 break;
             case "Selection":
                 Debug.Log("Command: [Selection]");
-                // Selectionを表示
                 List<Scenario> selectionList = ScenarioRepository.GetSelections(scenarioId);
+                foreach (Scenario selection in selectionList)
+                {
+                    string[] conditions = selection.Arg2.Split('&');
+                    foreach (string condition in conditions)
+                    {
+
+                    }
+                }
+
+                // Selectionを表示
                 sceneController.ShowSelections(selectionList);
                 breakLoop = true;
                 break;
