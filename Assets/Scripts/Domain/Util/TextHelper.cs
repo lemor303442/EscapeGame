@@ -1,50 +1,19 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
+﻿using System.Text.RegularExpressions;
 
-/// <summary>
-/// 文字のアニメーション
-/// </summary>
 public class TextHelper
 {
-	Text uiText;
-
-    string currentText = string.Empty;
-	float timeUntilDisplay = 0;
-	float timeElapsed = 0;
-	int lastUpdateCharacter = -1;
-    const float defaultIntervalForCharacterDisplay = 0.05f;
-
-
-
-	public TextHelper (Text _uiText)
-	{
-		uiText = _uiText;
-	}
-
-	public bool IsCompleteDisplayText {
-		get { return  Time.time > timeElapsed + timeUntilDisplay; }
-	}
-
-	public void CompleteDisplayText ()
-	{
-		timeUntilDisplay = 0;
-	}
-
-	public void Update ()
-	{
-		int displayCharacterCount = (int)(Mathf.Clamp01 ((Time.time - timeElapsed) / timeUntilDisplay) * currentText.Length);
-		if (displayCharacterCount != lastUpdateCharacter) {
-			uiText.text = currentText.Substring (0, displayCharacterCount);
-			lastUpdateCharacter = displayCharacterCount;
-		}
-	}
-
-    public void SetNextLine (string nextLineText, float intervalTime = defaultIntervalForCharacterDisplay)
-	{
-		currentText = nextLineText;
-		timeUntilDisplay = currentText.Length * intervalTime;
-		timeElapsed = Time.time;
-		lastUpdateCharacter = -1;
-	}
+    public static string ReplaceTextTags(string text)
+    {
+        string newText = text.Replace("<br>", "\n");
+        Regex regex = new Regex(@"\<param=[^\>]+\>");
+        Match match = regex.Match(newText);
+        while (match.Success)
+        {
+            string paramName = match.Value.Replace("<param=", "").Replace(">", "");
+            UnityEngine.Debug.Log(paramName);
+            newText = newText.Replace(match.Value, ParameterEntity.FindByParameterName(paramName).UserParameter.Value);
+            match = match.NextMatch();
+        }
+        return newText;
+    }
 }
