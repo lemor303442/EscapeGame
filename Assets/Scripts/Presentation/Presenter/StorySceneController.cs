@@ -16,6 +16,7 @@ public class StorySceneController : MonoBehaviour
 
     void Start()
     {
+        //Debug.Log("".IndexOf());
         // 初期データのインスタンスがない場合は、データを再ロードする。
         isDataReady = TextFileHelper.IsExist(Const.Path.MasterData.escapeInput) && ScenarioRepository.Count != 0;
         if (!isDataReady && TextFileHelper.IsExist(Const.Path.MasterData.escapeInput))
@@ -59,14 +60,14 @@ public class StorySceneController : MonoBehaviour
 
     public void ShowNextText(string name, string content)
     {
-        viewController.UpdateNameText(name);
-        textHelper.SetNextLine(content);
+        viewController.UpdateNameText(TextHelper.ReplaceTextTags(name));
+        textHelper.SetNextLine(TextHelper.ReplaceTextTags(content));
     }
 
     public void ShowNextText(string name, string content, float speed)
     {
         viewController.UpdateNameText(name);
-        textHelper.SetNextLine(content, speed);
+        textHelper.SetNextLine(TextHelper.ReplaceTextTags(content), speed);
     }
 
     public void ShowSelections(List<Scenario> selectionList)
@@ -103,6 +104,7 @@ public class StorySceneController : MonoBehaviour
         isEscapeMode = false;
         viewController.ToggleNamePanelIsActive(true);
         viewController.ToggleContentPanelIsActive(true);
+        viewController.UpdateEscapeBackground(null);
         scenarioManager.JumpTo(dest);
         scenarioManager.Next();
     }
