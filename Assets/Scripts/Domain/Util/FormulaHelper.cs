@@ -33,7 +33,11 @@ public class FormulaHelper
             strList.Add(leftSide);
             strList.Add(Const.Operator.greaterThan.ToString());
         }
-
+        else
+        {
+            strList.Add(formula);
+            return strList;
+        }
         if (rightSide.IndexOf(Const.Operator.plus) != -1)
         {
             string[] array = rightSide.Split(Const.Operator.plus);

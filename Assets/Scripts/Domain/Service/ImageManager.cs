@@ -49,6 +49,8 @@ public class ImageManager : MonoBehaviour
                 Debug.LogWarning("Unkown Character.Pivot [" + character.Pivot + "].");
                 break;
         }
+        //paddingを調整
+        sceneController.viewController.UpdatePadding(layer, character);
         //Spriteを表示
         Sprite image = Resources.Load<Sprite>(character.FilePath);
         sceneController.viewController.UpdateLayerImage(layer, image);

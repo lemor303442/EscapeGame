@@ -37,7 +37,9 @@ public static class CsvHelper
                             + item.Name + ","
                             + item.Pattern + ","
                             + item.Pivot + ","
-                            + item.FilePath;
+                            + item.FilePath + ","
+                            + item.PosX.ToString() + ","
+                            + item.PosY.ToString();
             csvSring += "\n";
         }
         return csvSring.Remove(csvSring.Length - 1);
@@ -56,8 +58,7 @@ public static class CsvHelper
                             + item.PosY.ToString() + ","
                             + item.Width.ToString() + ","
                             + item.Height.ToString() + ","
-                            + EscapeInput.FormatListToString(item.Items) + ","
-                            + EscapeInput.FormatListToString(item.Conditions);
+                            + item.Conditions;
             csvSring += "\n";
         }
         return csvSring.Remove(csvSring.Length - 1);
@@ -71,7 +72,10 @@ public static class CsvHelper
         {
             csvSring += item.Id.ToString() + ","
                             + item.Name + ","
-                            + item.ImagePath;
+                            + item.ImagePath + ","
+                            + item.Right + ","
+                            + item.Left + ","
+                            + item.Down;
             csvSring += "\n";
         }
         return csvSring.Remove(csvSring.Length - 1);

@@ -8,7 +8,7 @@ namespace Const
         public static readonly string ablsolutePath;
         public static class MasterData
         {
-            public static readonly string character = "Locals/Csv/MasterData/Character.csv";
+            public static readonly string character = "Locals/Csv/MasterData/Characters.csv";
             public static readonly string escapeInput = "Locals/Csv/MasterData/EscapeInputs.csv";
             public static readonly string escapeScene = "Locals/Csv/MasterData/EscapeScenes.csv";
             public static readonly string item = "Locals/Csv/MasterData/Items.csv";
@@ -18,8 +18,8 @@ namespace Const
         }
         public static class GameData
         {
-            public static readonly string userItem = "Locals/Csv/GameData/UserItem.json";
-            public static readonly string userParameter = "Locals/Csv/GameData/UserParameter.json";
+            public static readonly string userItem = "Locals/Csv/GameData/UserItem.csv";
+            public static readonly string userParameter = "Locals/Csv/GameData/UserParameter.csv";
         }
 
         static Path()
