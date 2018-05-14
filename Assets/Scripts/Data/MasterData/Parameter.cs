@@ -9,7 +9,8 @@ public class Parameter {
     public enum ParamType
     {
         INT,
-        BOOL
+        BOOL,
+        STRING
     }
 
     /// <summary>
@@ -33,6 +34,8 @@ public class Parameter {
                 return ParamType.BOOL;
             case "INT":
                 return ParamType.INT;
+            case "STRING":
+                return ParamType.STRING;
             default:
                 throw new System.Exception("Paramater.type must be passed by \"BOOL\" or \"INT\"");
         }

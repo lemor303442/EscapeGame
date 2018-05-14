@@ -7,11 +7,17 @@ public class StorySceneViewController : MonoBehaviour
     StorySceneController sceneController;
 
     [SerializeField] GameObject emptyObject;
-    [SerializeField] public Text nameText;
+    [SerializeField] Text nameText;
     [SerializeField] public Text contentText;
     [SerializeField] GameObject[] selectionButtons = new GameObject[3];
     [SerializeField] Text[] selectionTexts = new Text[3];
     [SerializeField] Transform layerTarget;
+    [SerializeField] GameObject namePanel;
+    [SerializeField] GameObject contentPanel;
+    [SerializeField] Image escapeBackground;
+    [SerializeField] GameObject escapeButtonRight;
+    [SerializeField] GameObject escapeButtonDown;
+    [SerializeField] GameObject escapeButtonLeft;
 
     public int NumOfSelectionButtons { get { return selectionButtons.Length; } }
 
@@ -25,8 +31,20 @@ public class StorySceneViewController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            sceneController.OnClick();
+            sceneController.OnClick(TouchInput.position);
         }
+    }
+
+    public void ToggleNamePanelIsActive(bool flg)
+    {
+        namePanel.SetActive(flg);
+        nameText.text = "";
+    }
+
+    public void ToggleContentPanelIsActive(bool flg)
+    {
+        contentPanel.SetActive(flg);
+        contentText.text = "";
     }
 
     public void UpdateNameText(string name)
@@ -64,10 +82,34 @@ public class StorySceneViewController : MonoBehaviour
         }
     }
 
+    public void UpdateEscapeBackground(Sprite sprite)
+    {
+        if (sprite == null)
+        {
+            escapeBackground.sprite = null;
+            escapeBackground.enabled = false;
+        }
+        else
+        {
+            escapeBackground.sprite = sprite;
+            escapeBackground.enabled = true;
+        }
+    }
+
     public void UpdateLayerPivot(Layer layer, TextAnchor textAnchor)
     {
         GameObject layerObj = FindLayer(layer);
         layerObj.GetComponent<VerticalLayoutGroup>().childAlignment = textAnchor;
+    }
+
+    public void UpdatePadding(Layer layer, Character character)
+    {
+        GameObject layerObj = FindLayer(layer);
+        VerticalLayoutGroup group = layerObj.GetComponent<VerticalLayoutGroup>();
+        group.padding.left = character.PosX;
+        group.padding.right = -character.PosX;
+        group.padding.bottom = character.PosY;
+        group.padding.top = -character.PosY;
     }
 
     public void UpdateLayerImageSize(Layer layer, Vector2 size)
@@ -119,4 +161,43 @@ public class StorySceneViewController : MonoBehaviour
     {
         return GameObject.Find(layer.Name + "_" + layer.LayerType);
     }
+
+    public void ToggleEscapeButtonIsActive(EscapeButtonType type, bool flg)
+    {
+        switch (type)
+        {
+            case EscapeButtonType.RIGHT:
+                escapeButtonRight.SetActive(flg);
+                break;
+            case EscapeButtonType.DOWN:
+                escapeButtonDown.SetActive(flg);
+                break;
+            case EscapeButtonType.LEFT:
+                escapeButtonLeft.SetActive(flg);
+                break;
+        }
+    }
+
+    public void OnEscapeButtonDown(string buttonType)
+    {
+        switch (buttonType)
+        {
+            case "RIGHT":
+                sceneController.OnEscapeButtonDown(EscapeButtonType.RIGHT);
+                break;
+            case "LEFT":
+                sceneController.OnEscapeButtonDown(EscapeButtonType.LEFT);
+                break;
+            case "DOWN":
+                sceneController.OnEscapeButtonDown(EscapeButtonType.DOWN);
+                break;
+        }
+    }
+}
+
+public enum EscapeButtonType
+{
+    RIGHT,
+    DOWN,
+    LEFT
 }

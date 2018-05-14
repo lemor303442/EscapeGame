@@ -7,13 +7,16 @@ public class StorySceneController : MonoBehaviour
     [HideInInspector]
     public StorySceneViewController viewController;
     ScenarioManager scenarioManager;
-    TextHelper textHelper;
+    EscapeManager escapeManager;
+    TextComponentHelper textHelper;
 
     bool isDataReady = false;
     bool isClickable = true;
+    bool isEscapeMode = false;
 
     void Start()
     {
+        //Debug.Log("".IndexOf());
         // 初期データのインスタンスがない場合は、データを再ロードする。
         isDataReady = TextFileHelper.IsExist(Const.Path.MasterData.escapeInput) && ScenarioRepository.Count != 0;
         if (!isDataReady && TextFileHelper.IsExist(Const.Path.MasterData.escapeInput))
@@ -23,9 +26,10 @@ public class StorySceneController : MonoBehaviour
         }
         viewController = GameObject.FindObjectOfType<StorySceneViewController>();
         scenarioManager = GameObject.FindObjectOfType<ScenarioManager>();
+        escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         viewController.Init();
         scenarioManager.Init();
-        textHelper = new TextHelper(viewController.contentText);
+        textHelper = new TextComponentHelper(viewController.contentText);
 
         if (isDataReady) scenarioManager.Next();
     }
@@ -35,8 +39,13 @@ public class StorySceneController : MonoBehaviour
         if (isDataReady) textHelper.Update();
     }
 
-    public void OnClick()
+    public void OnClick(Vector2 touchPos)
     {
+        if (isEscapeMode)
+        {
+            escapeManager.OnClick(touchPos);
+            return;
+        }
         if (isClickable)
         {
             if (textHelper.IsCompleteDisplayText)
@@ -52,14 +61,14 @@ public class StorySceneController : MonoBehaviour
 
     public void ShowNextText(string name, string content)
     {
-        viewController.nameText.text = name;
-        textHelper.SetNextLine(content);
+        viewController.UpdateNameText(TextHelper.ReplaceTextTags(name));
+        textHelper.SetNextLine(TextHelper.ReplaceTextTags(content));
     }
 
     public void ShowNextText(string name, string content, float speed)
     {
-        viewController.nameText.text = name;
-        textHelper.SetNextLine(content, speed);
+        viewController.UpdateNameText(name);
+        textHelper.SetNextLine(TextHelper.ReplaceTextTags(content), speed);
     }
 
     public void ShowSelections(List<Scenario> selectionList)
@@ -82,5 +91,30 @@ public class StorySceneController : MonoBehaviour
         // Jumpさせる
         scenarioManager.OnSelectionSelected(index);
         isClickable = true;
+    }
+
+    public void ChangeToEscapeMode()
+    {
+        isEscapeMode = true;
+        viewController.ToggleNamePanelIsActive(false);
+        viewController.ToggleContentPanelIsActive(false);
+    }
+
+    public void ChangeToScenarioMode(string dest)
+    {
+        isEscapeMode = false;
+        viewController.ToggleNamePanelIsActive(true);
+        viewController.ToggleContentPanelIsActive(true);
+        viewController.UpdateEscapeBackground(null);
+        viewController.ToggleEscapeButtonIsActive(EscapeButtonType.RIGHT, false);
+        viewController.ToggleEscapeButtonIsActive(EscapeButtonType.LEFT, false);
+        viewController.ToggleEscapeButtonIsActive(EscapeButtonType.DOWN, false);
+        scenarioManager.JumpTo(dest);
+        scenarioManager.Next();
+    }
+
+    public void OnEscapeButtonDown(EscapeButtonType type)
+    {
+        escapeManager.OnEscapeButtonDown(type);
     }
 }
