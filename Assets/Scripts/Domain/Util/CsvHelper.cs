@@ -72,7 +72,10 @@ public static class CsvHelper
         {
             csvSring += item.Id.ToString() + ","
                             + item.Name + ","
-                            + item.ImagePath;
+                            + item.ImagePath + ","
+                            + item.Right + ","
+                            + item.Left + ","
+                            + item.Down;
             csvSring += "\n";
         }
         return csvSring.Remove(csvSring.Length - 1);

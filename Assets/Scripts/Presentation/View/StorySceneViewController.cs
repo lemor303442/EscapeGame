@@ -15,6 +15,9 @@ public class StorySceneViewController : MonoBehaviour
     [SerializeField] GameObject namePanel;
     [SerializeField] GameObject contentPanel;
     [SerializeField] Image escapeBackground;
+    [SerializeField] GameObject escapeButtonRight;
+    [SerializeField] GameObject escapeButtonDown;
+    [SerializeField] GameObject escapeButtonLeft;
 
     public int NumOfSelectionButtons { get { return selectionButtons.Length; } }
 
@@ -158,4 +161,43 @@ public class StorySceneViewController : MonoBehaviour
     {
         return GameObject.Find(layer.Name + "_" + layer.LayerType);
     }
+
+    public void ToggleEscapeButtonIsActive(EscapeButtonType type, bool flg)
+    {
+        switch (type)
+        {
+            case EscapeButtonType.RIGHT:
+                escapeButtonRight.SetActive(flg);
+                break;
+            case EscapeButtonType.DOWN:
+                escapeButtonDown.SetActive(flg);
+                break;
+            case EscapeButtonType.LEFT:
+                escapeButtonLeft.SetActive(flg);
+                break;
+        }
+    }
+
+    public void OnEscapeButtonDown(string buttonType)
+    {
+        switch (buttonType)
+        {
+            case "RIGHT":
+                sceneController.OnEscapeButtonDown(EscapeButtonType.RIGHT);
+                break;
+            case "LEFT":
+                sceneController.OnEscapeButtonDown(EscapeButtonType.LEFT);
+                break;
+            case "DOWN":
+                sceneController.OnEscapeButtonDown(EscapeButtonType.DOWN);
+                break;
+        }
+    }
+}
+
+public enum EscapeButtonType
+{
+    RIGHT,
+    DOWN,
+    LEFT
 }

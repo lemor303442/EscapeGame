@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EscapeManager : MonoBehaviour
 {
+    EscapeScene currentEscapeScene;
     StorySceneController sceneController;
     List<EscapeInput> availableInputList;
 
@@ -15,11 +16,34 @@ public class EscapeManager : MonoBehaviour
 
     public void ToEscape(string escapeSceneName)
     {
-        EscapeScene escapeScene = EscapeSceneRepository.FindByName(escapeSceneName);
-        Sprite sprite = Resources.Load<Sprite>(escapeScene.ImagePath);
-        if (sprite == null) Debug.LogWarning("EscapeScene Error: [" + escapeScene.ImagePath + "] not found");
+        currentEscapeScene = EscapeSceneRepository.FindByName(escapeSceneName);
+        UpdateArrowButtons(currentEscapeScene);
+        Sprite sprite = Resources.Load<Sprite>(currentEscapeScene.ImagePath);
+        if (sprite == null) Debug.LogWarning("EscapeScene Error: [" + currentEscapeScene.ImagePath + "] not found");
         sceneController.viewController.UpdateEscapeBackground(sprite);
-        availableInputList = GetAvailableInputList(escapeScene);
+        availableInputList = GetAvailableInputList(currentEscapeScene);
+    }
+
+    public void UpdateArrowButtons(EscapeScene scene)
+    {
+        sceneController.viewController.ToggleEscapeButtonIsActive(EscapeButtonType.RIGHT, !string.IsNullOrEmpty(scene.Right));
+        sceneController.viewController.ToggleEscapeButtonIsActive(EscapeButtonType.LEFT, !string.IsNullOrEmpty(scene.Left));
+        sceneController.viewController.ToggleEscapeButtonIsActive(EscapeButtonType.DOWN, !string.IsNullOrEmpty(scene.Down));
+    }
+
+    public void OnEscapeButtonDown(EscapeButtonType type)
+    {
+        switch(type){
+            case EscapeButtonType.RIGHT:
+                ToEscape(currentEscapeScene.Right);
+                break;
+            case EscapeButtonType.LEFT:
+                ToEscape(currentEscapeScene.Left);
+                break;
+            case EscapeButtonType.DOWN:
+                ToEscape(currentEscapeScene.Down);
+                break;
+        }
     }
 
     public List<EscapeInput> GetAvailableInputList(EscapeScene scene)
@@ -50,10 +74,14 @@ public class EscapeManager : MonoBehaviour
     {
         foreach (EscapeInput escapeInput in availableInputList)
         {
-            if(IsInsideOfTarget(escapeInput, clickPos)){
-                if(Regex.IsMatch(escapeInput.JumpTo, @"^\*")){
+            if (IsInsideOfTarget(escapeInput, clickPos))
+            {
+                if (Regex.IsMatch(escapeInput.JumpTo, @"^\*"))
+                {
                     sceneController.ChangeToScenarioMode(escapeInput.JumpTo);
-                }else{
+                }
+                else
+                {
                     ToEscape(escapeInput.JumpTo);
                 }
                 break;

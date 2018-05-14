@@ -56,7 +56,7 @@ public class MasterDataLoader
                 foreach (string[] data in csvDataList)
                 {
                     if (data == csvDataList[0]) continue;
-                    dataSet.EscapeSceneList.Add(new EscapeScene(int.Parse(data[0]), data[1], data[2]));
+                    dataSet.EscapeSceneList.Add(new EscapeScene(int.Parse(data[0]), data[1], data[2], data[3], data[4], data[5]));
                 }
                 break;
             case DataType.ITEM:

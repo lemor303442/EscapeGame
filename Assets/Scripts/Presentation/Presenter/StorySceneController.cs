@@ -41,7 +41,8 @@ public class StorySceneController : MonoBehaviour
 
     public void OnClick(Vector2 touchPos)
     {
-        if (isEscapeMode) {
+        if (isEscapeMode)
+        {
             escapeManager.OnClick(touchPos);
             return;
         }
@@ -105,8 +106,15 @@ public class StorySceneController : MonoBehaviour
         viewController.ToggleNamePanelIsActive(true);
         viewController.ToggleContentPanelIsActive(true);
         viewController.UpdateEscapeBackground(null);
+        viewController.ToggleEscapeButtonIsActive(EscapeButtonType.RIGHT, false);
+        viewController.ToggleEscapeButtonIsActive(EscapeButtonType.LEFT, false);
+        viewController.ToggleEscapeButtonIsActive(EscapeButtonType.DOWN, false);
         scenarioManager.JumpTo(dest);
         scenarioManager.Next();
     }
 
+    public void OnEscapeButtonDown(EscapeButtonType type)
+    {
+        escapeManager.OnEscapeButtonDown(type);
+    }
 }
