@@ -198,6 +198,15 @@ public class ScenarioManager : MonoBehaviour
                 escapeManager.ToEscape(scenario.Arg1);
                 breakLoop = true;
                 break;
+            case "InstantiatePrefab":
+                Debug.Log("Command: [InstantiatePrefab]");
+                GameObject clone = Instantiate<GameObject>(
+                    Resources.Load<GameObject>(scenario.Arg1),
+                    new Vector3(float.Parse(scenario.Arg3), float.Parse(scenario.Arg4), float.Parse(scenario.Arg5)),
+                    Quaternion.identity
+                );
+                clone.name = scenario.Arg2;
+                break;
             default:
                 Debug.LogWarning("Unkown command [" + scenario.Command + "]");
                 breakLoop = true;
