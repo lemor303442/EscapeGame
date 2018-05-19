@@ -206,6 +206,7 @@ public class ScenarioManager : MonoBehaviour
                     Quaternion.identity
                 );
                 clone.name = scenario.Arg2;
+                scenarioId++;
                 break;
             default:
                 Debug.LogWarning("Unkown command [" + scenario.Command + "]");
