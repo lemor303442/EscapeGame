@@ -37,27 +37,9 @@ public class AudioManager : MonoBehaviour
         voice.Stop();
     }
 
-    public void PlayBgm(string path, float volume = defaultVolume)
+    public void PlayBgm(AudioClip clip, float volume, float startTime)
     {
-        AudioClip clip = Resources.Load<AudioClip>(path);
-        if (clip == null)
-        {
-            Debug.LogWarning("Bgm Error: [" + path + "] not found");
-            return;
-        }
-        bgm.clip = clip;
-        bgm.volume = volume;
-        bgm.Play();
-    }
-
-    public void PlayBgmWithStartTime(string path, float startTime, float volume = defaultVolume)
-    {
-        AudioClip clip = Resources.Load<AudioClip>(path);
-        if (clip == null)
-        {
-            Debug.LogWarning("Bgm Error: [" + path + "] not found");
-            return;
-        }
+        if (volume <= 0) volume = defaultVolume;
         bgm.clip = clip;
         bgm.volume = volume;
         bgm.time = startTime;

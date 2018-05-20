@@ -31,6 +31,7 @@ public class ScenarioManager : MonoBehaviour
     SpriteOffCommandHandler spriteOffCommandHandler;
     CharacterCommandHandler characterCommandHandler;
     CharacterOffCommandHandler characterOffCommandHandler;
+    BgmCommandHandler bgmCommandHandler;
 
     public StorySceneViewController ScenarioView
     {
@@ -59,6 +60,7 @@ public class ScenarioManager : MonoBehaviour
         spriteOffCommandHandler = new SpriteOffCommandHandler(this);
         characterCommandHandler = new CharacterCommandHandler(this);
         characterOffCommandHandler = new CharacterOffCommandHandler(this);
+        bgmCommandHandler = new BgmCommandHandler(this);
     }
 
     public void OnClick(Vector2 touchPos)
@@ -178,19 +180,12 @@ public class ScenarioManager : MonoBehaviour
                     break;
                 }
             case "Bgm":
-                Debug.Log("Command: [Bgm]");
-                if (string.IsNullOrEmpty(scenario.Arg3))
                 {
-                    if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlayBgm(scenario.Arg1);
-                    else audioManager.PlayBgm(scenario.Arg1, float.Parse(scenario.Arg2));
+                    var options = BgmCommandHandler.Options.Create(scenario);
+                    bgmCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
                 }
-                else
-                {
-                    if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlayBgmWithStartTime(scenario.Arg1, float.Parse(scenario.Arg3));
-                    else audioManager.PlayBgmWithStartTime(scenario.Arg1, float.Parse(scenario.Arg3), float.Parse(scenario.Arg2));
-                }
-                scenarioId++;
-                break;
             case "BgmOff":
                 Debug.Log("Command: [BgmOff]");
                 audioManager.StopBgm();
