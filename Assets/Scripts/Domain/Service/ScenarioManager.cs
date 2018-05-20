@@ -19,6 +19,12 @@ public class ScenarioManager : MonoBehaviour
     AnimatorManager animatorManager;
     int scenarioId = 0;
 
+    BgCommandHandler bgCommandHandler;
+
+    public StorySceneViewController ScenarioView{
+        get{ return sceneController.viewController; }
+    }
+
     public void Init()
     {
         sceneController = GameObject.FindObjectOfType<StorySceneController>();
@@ -30,6 +36,7 @@ public class ScenarioManager : MonoBehaviour
         escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         escapeManager.Init();
         animatorManager = GameObject.FindObjectOfType<AnimatorManager>();
+        bgCommandHandler = new BgCommandHandler(this);
     }
 
     public void Next()
@@ -112,7 +119,9 @@ public class ScenarioManager : MonoBehaviour
                 break;
             case "Bg":
                 Debug.Log("Command: [Bg]");
-                imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
+                // imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
+                var options = BgCommandHandler.Options.Create(scenario);
+                bgCommandHandler.OnCommand(options);
                 scenarioId++;
                 break;
             case "BgOff":
