@@ -187,10 +187,11 @@ public class ScenarioManager : MonoBehaviour
                     break;
                 }
             case "BgmOff":
-                Debug.Log("Command: [BgmOff]");
-                audioManager.StopBgm();
-                scenarioId++;
-                break;
+                {
+                    audioManager.StopBgm();
+                    scenarioId++;
+                    break;
+                }
             case "Ambience":
                 Debug.Log("Command: [Ambience]");
                 if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlayAmbience(scenario.Arg1);
@@ -198,10 +199,11 @@ public class ScenarioManager : MonoBehaviour
                 scenarioId++;
                 break;
             case "AmbienceOff":
-                Debug.Log("Command: [AmbienceOff]");
-                audioManager.StopAmbience();
-                scenarioId++;
-                break;
+                {
+                    audioManager.StopAmbience();
+                    scenarioId++;
+                    break;
+                }
             case "SoundEffect":
                 Debug.Log("Command: [SoundEffect]");
                 if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlaySoundEffect(scenario.Arg1);
@@ -209,15 +211,17 @@ public class ScenarioManager : MonoBehaviour
                 scenarioId++;
                 break;
             case "SoundEffectOff":
-                Debug.Log("Command: [SoundEffectOff]");
-                audioManager.StopSoundEffect();
-                scenarioId++;
-                break;
+                {
+                    audioManager.StopSoundEffect();
+                    scenarioId++;
+                    break;
+                }
             case "StopAllSound":
-                Debug.Log("Command: [StopAllSound]");
-                audioManager.StopAllSound();
-                scenarioId++;
-                break;
+                {
+                    audioManager.StopAllSound();
+                    scenarioId++;
+                    break;
+                }
             case "ChangeScene":
                 Debug.Log("Command: [ChangeScene]");
                 SceneManager.LoadScene(scenario.Arg1);
