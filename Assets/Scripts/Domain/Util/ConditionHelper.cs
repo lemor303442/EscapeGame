@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class ConditionHelper
 {
@@ -11,9 +12,12 @@ public class ConditionHelper
         if (formulaList.Count == 1)
         {
             // アイテムの場合
-            Debug.Log(formulaList[0]);
-            ItemEntity itemEntity = ItemEntity.FindByItemName(formulaList[0]);
-            return itemEntity.UserItem.IsOwned;
+            bool isReverse = Regex.IsMatch(formulaList[0], @"^\!");
+            string itemName = formulaList[0];
+            if (isReverse) itemName = itemName.Substring(1);
+            ItemEntity itemEntity = ItemEntity.FindByItemName(itemName);
+            if (isReverse) return !itemEntity.UserItem.IsOwned;
+            else return itemEntity.UserItem.IsOwned;
         }
         else
         {
