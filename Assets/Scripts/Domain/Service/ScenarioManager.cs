@@ -30,6 +30,7 @@ public class ScenarioManager : MonoBehaviour
     SpriteCommandHandler spriteCommandHandler;
     SpriteOffCommandHandler spriteOffCommandHandler;
     CharacterCommandHandler characterCommandHandler;
+    CharacterOffCommandHandler characterOffCommandHandler;
 
     public StorySceneViewController ScenarioView
     {
@@ -57,6 +58,7 @@ public class ScenarioManager : MonoBehaviour
         spriteCommandHandler = new SpriteCommandHandler(this);
         spriteOffCommandHandler = new SpriteOffCommandHandler(this);
         characterCommandHandler = new CharacterCommandHandler(this);
+        characterOffCommandHandler = new CharacterOffCommandHandler(this);
     }
 
     public void OnClick(Vector2 touchPos)
@@ -169,10 +171,12 @@ public class ScenarioManager : MonoBehaviour
                     break;
                 }
             case "CharacterOff":
-                Debug.Log("Command: [CharacterOff]");
-                imageManager.RemoveLayerImage(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    var options = CharacterOffCommandHandler.Options.Create(scenario);
+                    characterOffCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Bgm":
                 Debug.Log("Command: [Bgm]");
                 if (string.IsNullOrEmpty(scenario.Arg3))
