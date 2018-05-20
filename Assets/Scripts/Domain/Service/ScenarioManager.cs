@@ -83,7 +83,8 @@ public class ScenarioManager : MonoBehaviour
             case "Jump":
                 Debug.Log("Command: [Jump]");
                 // ジャンプ先へ移動
-                JumpTo(scenario.Arg1);
+                if(ConditionHelper.IsAllConditionValid(scenario.Arg2)) JumpTo(scenario.Arg1);
+                scenarioId++;
                 break;
             case "Selection":
                 Debug.Log("Command: [Selection]");
@@ -92,16 +93,12 @@ public class ScenarioManager : MonoBehaviour
                 List<int> removeSelectionId = new List<int>();
                 foreach (Scenario selection in selectionList)
                 {
-                    if (string.IsNullOrEmpty(selection.Arg2)) continue;
-                    List<string> conditionList = ConditionHelper.GetConditions(selection.Arg2);
-                    if (conditionList == null) continue;
-                    foreach (string condition in conditionList)
+                    if (!ConditionHelper.IsAllConditionValid(scenario.Arg2))
                     {
-                        if (!ConditionHelper.IsConditionValid(condition)) {
-                            removeSelectionId.Add(selection.Id);
-                            break;
-                        }
+                        removeSelectionId.Add(selection.Id);
+                        break;
                     }
+
                 }
                 foreach (int i in removeSelectionId)
                 {
