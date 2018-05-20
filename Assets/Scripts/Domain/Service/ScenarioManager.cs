@@ -215,6 +215,11 @@ public class ScenarioManager : MonoBehaviour
                 animatorManager.SetTrigger(scenario.Arg1, scenario.Arg2);
                 scenarioId++;
                 break;
+            case "DestoryGameObject":
+                Debug.Log("Command: [DestoryGameObject]");
+                Destroy(GameObject.Find(scenario.Arg1));
+                scenarioId++;
+                break;
             default:
                 Debug.LogWarning("Unkown command [" + scenario.Command + "]");
                 breakLoop = true;
