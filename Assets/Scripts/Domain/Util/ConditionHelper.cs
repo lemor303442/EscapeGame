@@ -5,7 +5,21 @@ using System.Text.RegularExpressions;
 
 public class ConditionHelper
 {
-    public static bool IsConditionValid(string formula)
+    
+    public static bool IsAllConditionValid(string formula){
+        List<string> conditionList = ConditionHelper.GetConditions(formula);
+        if (conditionList == null) return true;
+        foreach (string condition in conditionList)
+        {
+            if (!IsConditionValid(condition))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool IsConditionValid(string formula)
     {
         formula = formula.Replace(" ", "");
         List<string> formulaList = FormulaHelper.FormatFormula(formula);
@@ -44,7 +58,7 @@ public class ConditionHelper
         }
     }
 
-    public static List<string> GetConditions(string condition)
+    private static List<string> GetConditions(string condition)
     {
         if (string.IsNullOrEmpty(condition)) return null;
         condition = condition.Replace(" ", "");

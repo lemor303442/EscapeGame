@@ -52,15 +52,9 @@ public class EscapeManager : MonoBehaviour
         List<int> removeIds = new List<int>();
         foreach (EscapeInput escapeInput in list)
         {
-            List<string> conditionList = ConditionHelper.GetConditions(escapeInput.Conditions);
-            if (conditionList == null) continue;
-            foreach (string condition in conditionList)
+            if (!ConditionHelper.IsAllConditionValid(escapeInput.Conditions))
             {
-                if (!ConditionHelper.IsConditionValid(condition))
-                {
-                    removeIds.Add(escapeInput.Id);
-                    break;
-                }
+                removeIds.Add(escapeInput.Id);
             }
         }
         foreach (int i in removeIds)
