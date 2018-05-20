@@ -16,6 +16,7 @@ public class ScenarioManager : MonoBehaviour
     ItemManager itemManager;
     ParamManager paramManager;
     EscapeManager escapeManager;
+    AnimatorManager animatorManager;
     int scenarioId = 0;
 
     public void Init()
@@ -28,6 +29,7 @@ public class ScenarioManager : MonoBehaviour
         paramManager = GameObject.FindObjectOfType<ParamManager>();
         escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         escapeManager.Init();
+        animatorManager = GameObject.FindObjectOfType<AnimatorManager>();
     }
 
     public void Next()
@@ -113,11 +115,21 @@ public class ScenarioManager : MonoBehaviour
                 break;
             case "Bg":
                 Debug.Log("Command: [Bg]");
-                imageManager.UpdateBackgroundImage(scenario.Arg1, scenario.Arg2);
+                imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
                 scenarioId++;
                 break;
             case "BgOff":
                 Debug.Log("Command: [BgOff]");
+                imageManager.RemoveLayerImage(scenario.Arg1);
+                scenarioId++;
+                break;
+            case "Sprite":
+                Debug.Log("Command: [Sprite]");
+                imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
+                scenarioId++;
+                break;
+            case "SpriteOff":
+                Debug.Log("Command: [SpriteOff]");
                 imageManager.RemoveLayerImage(scenario.Arg1);
                 scenarioId++;
                 break;
@@ -206,6 +218,16 @@ public class ScenarioManager : MonoBehaviour
                     Quaternion.identity
                 );
                 clone.name = scenario.Arg2;
+                scenarioId++;
+                break;
+            case "AnimatorSetTrigger":
+                Debug.Log("Command: [AnimatorSetTrigger]");
+                animatorManager.SetTrigger(scenario.Arg1, scenario.Arg2);
+                scenarioId++;
+                break;
+            case "DestoryGameObject":
+                Debug.Log("Command: [DestoryGameObject]");
+                Destroy(GameObject.Find(scenario.Arg1));
                 scenarioId++;
                 break;
             default:
