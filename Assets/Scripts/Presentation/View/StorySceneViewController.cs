@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class StorySceneViewController : MonoBehaviour
 {
     StorySceneController sceneController;
+    public TextComponentHelper textComponentHelper;
 
     [SerializeField] GameObject emptyObject;
     [SerializeField] Text nameText;
@@ -24,14 +25,18 @@ public class StorySceneViewController : MonoBehaviour
 
     public void Init()
     {
+        enabled = false;
+        textComponentHelper = new TextComponentHelper(contentText);
+
         sceneController = GameObject.FindObjectOfType<StorySceneController>();
     }
 
     void Update()
     {
+        textComponentHelper.Update();
         if (Input.GetMouseButtonDown(0))
         {
-            sceneController.OnClick(TouchInput.position);
+            GameObject.FindObjectOfType<ScenarioManager>().OnClick(TouchInput.position);
         }
     }
 
@@ -52,6 +57,16 @@ public class StorySceneViewController : MonoBehaviour
         nameText.text = name;
     }
 
+    public void UpdateContentText(string content)
+    {
+        textComponentHelper.SetNextLine(TextHelper.ReplaceTextTags(content));
+    }
+
+    public void UpdateContentText(string content, float speed)
+    {
+        textComponentHelper.SetNextLine(TextHelper.ReplaceTextTags(content), speed);
+    }
+
     public void ToggleSelectionButtonIsActive(int index, bool flg)
     {
         selectionButtons[index].SetActive(flg);
@@ -64,7 +79,7 @@ public class StorySceneViewController : MonoBehaviour
 
     public void OnSelectionButtonDown(int index)
     {
-        sceneController.OnSelectionSelected(index);
+        GameObject.FindObjectOfType<ScenarioManager>().OnSelectionSelected(index);
     }
 
     public void UpdateLayerImage(Layer layer, Sprite sprite)
@@ -183,14 +198,23 @@ public class StorySceneViewController : MonoBehaviour
         switch (buttonType)
         {
             case "RIGHT":
-                sceneController.OnEscapeButtonDown(EscapeButtonType.RIGHT);
+                GameObject.FindObjectOfType<ScenarioManager>().OnEscapeButtonDown(EscapeButtonType.RIGHT);
                 break;
             case "LEFT":
-                sceneController.OnEscapeButtonDown(EscapeButtonType.LEFT);
+                GameObject.FindObjectOfType<ScenarioManager>().OnEscapeButtonDown(EscapeButtonType.LEFT);
                 break;
             case "DOWN":
-                sceneController.OnEscapeButtonDown(EscapeButtonType.DOWN);
+                GameObject.FindObjectOfType<ScenarioManager>().OnEscapeButtonDown(EscapeButtonType.DOWN);
                 break;
+        }
+    }
+
+    public void ShowSelections(List<Scenario> selectionList)
+    {
+        for (int i = 0; i < selectionList.Count; i++)
+        {
+            ToggleSelectionButtonIsActive(i, true);
+            UpdateSelectionText(i, selectionList[i].Text);
         }
     }
 }

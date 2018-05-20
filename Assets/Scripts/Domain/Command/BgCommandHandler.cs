@@ -34,15 +34,13 @@ public class BgCommandHandler : ScenarioCommandHandler
     public override void OnCommand(CommandOptions commandOptions)
     {
         base.OnCommand(commandOptions);
+        OnCommandBg(commandOptions as Options);
     }
 
     void OnCommandBg(Options options)
     {
-
-		if(options.Img == null)
-			return;
-		
-		scenarioManager.ScenarioView.UpdateLayerImage(
+        if (options.Img == null) return;
+        scenarioManager.ScenarioView.UpdateLayerImage(
             options.Layer, options.Img
         );
     }

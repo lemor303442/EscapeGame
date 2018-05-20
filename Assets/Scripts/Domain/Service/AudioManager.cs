@@ -9,6 +9,21 @@ public class AudioManager : MonoBehaviour
 
     const float defaultVolume = 0.5f;
 
+    public static AudioManager Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
     public void PlayVoice(string path, float volume = defaultVolume)
     {
         AudioClip clip = Resources.Load<AudioClip>(path);

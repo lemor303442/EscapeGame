@@ -15,8 +15,6 @@ public class TextComponentHelper
 	int lastUpdateCharacter = -1;
     const float defaultIntervalForCharacterDisplay = 0.05f;
 
-
-
 	public TextComponentHelper (Text _uiText)
 	{
 		uiText = _uiText;

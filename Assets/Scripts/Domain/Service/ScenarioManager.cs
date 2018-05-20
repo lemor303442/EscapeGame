@@ -17,12 +17,20 @@ public class ScenarioManager : MonoBehaviour
     ParamManager paramManager;
     EscapeManager escapeManager;
     AnimatorManager animatorManager;
+
+    bool isClickable = false;
+    bool isEscapeMode = false;
     int scenarioId = 0;
 
+    TextCommandHandler textCommandHandler;
+    JumpCommandHandler jumpCommandHandler;
     BgCommandHandler bgCommandHandler;
+    BgOffCommandHandler bgOffCommandHandler;
+    SelectionCommandHandler selectionCommandHandler;
 
-    public StorySceneViewController ScenarioView{
-        get{ return sceneController.viewController; }
+    public StorySceneViewController ScenarioView
+    {
+        get { return sceneController.viewController; }
     }
 
     public void Init()
@@ -36,7 +44,33 @@ public class ScenarioManager : MonoBehaviour
         escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         escapeManager.Init();
         animatorManager = GameObject.FindObjectOfType<AnimatorManager>();
+
+        isClickable = true;
+        textCommandHandler = new TextCommandHandler(this);
         bgCommandHandler = new BgCommandHandler(this);
+        bgOffCommandHandler = new BgOffCommandHandler(this);
+        jumpCommandHandler = new JumpCommandHandler(this);
+        selectionCommandHandler = new SelectionCommandHandler(this);
+    }
+
+    public void OnClick(Vector2 touchPos)
+    {
+        if (isEscapeMode)
+        {
+            escapeManager.OnClick(touchPos);
+            return;
+        }
+        if (isClickable)
+        {
+            if (ScenarioView.textComponentHelper.IsCompleteDisplayText)
+            {
+                Next();
+            }
+            else
+            {
+                ScenarioView.textComponentHelper.CompleteDisplayText();
+            }
+        }
     }
 
     public void Next()
@@ -68,67 +102,47 @@ public class ScenarioManager : MonoBehaviour
     private bool CommandFunc(Scenario scenario)
     {
         bool breakLoop = false;
+        ShowCommandLog(scenario);
         switch (scenario.Command)
         {
             case "":
-                Debug.Log("Command: [Text]");
-                // テキストの表示
-                if (string.IsNullOrEmpty(scenario.Arg4))
-                    sceneController.ShowNextText(scenario.Arg1, scenario.Text);
-                else
-                    sceneController.ShowNextText(scenario.Arg1, scenario.Text, float.Parse(scenario.Arg4));
-                // ボイスの再生
-                if (!string.IsNullOrEmpty(scenario.Arg2))
                 {
-                    if (string.IsNullOrEmpty(scenario.Arg3))
-                        audioManager.PlayVoice(scenario.Arg2);
-                    else
-                        audioManager.PlayVoice(scenario.Arg2, float.Parse(scenario.Arg3));
+                    var options = TextCommandHandler.Options.Create(scenario);
+                    textCommandHandler.OnCommand(options);
+                    breakLoop = true;
+                    break;
                 }
-                breakLoop = true;
-                break;
             case "Jump":
-                Debug.Log("Command: [Jump]");
-                // ジャンプ先へ移動
-                if(ConditionHelper.IsAllConditionValid(scenario.Arg2)) JumpTo(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    var options = JumpCommandHandler.Options.Create(scenario);
+                    jumpCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Selection":
-                Debug.Log("Command: [Selection]");
-                List<Scenario> selectionList = ScenarioRepository.GetSelections(scenarioId);
-                // 条件を満たしていないselectionを削除
-                List<int> removeSelectionId = new List<int>();
-                foreach (Scenario selection in selectionList)
                 {
-                    if (!ConditionHelper.IsAllConditionValid(scenario.Arg2))
-                    {
-                        removeSelectionId.Add(selection.Id);
-                        break;
-                    }
-
+                    var options = SelectionCommandHandler.Options.Create(scenario);
+                    selectionCommandHandler.OnCommand(options);
+                    isClickable = false;
+                    breakLoop = true;
+                    break;
                 }
-                foreach (int i in removeSelectionId)
-                {
-                    selectionList.RemoveAll(x => x.Id == i);
-                }
-
-                // Selectionを表示
-                sceneController.ShowSelections(selectionList);
-                breakLoop = true;
-                Debug.Log("break selection loop");
-                break;
             case "Bg":
-                Debug.Log("Command: [Bg]");
-                // imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
-                var options = BgCommandHandler.Options.Create(scenario);
-                bgCommandHandler.OnCommand(options);
-                scenarioId++;
-                break;
+                {
+                    // imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
+                    var options = BgCommandHandler.Options.Create(scenario);
+                    bgCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "BgOff":
-                Debug.Log("Command: [BgOff]");
-                imageManager.RemoveLayerImage(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    //imageManager.RemoveLayerImage(scenario.Arg1);
+                    var options = BgOffCommandHandler.Options.Create(scenario);
+                    bgOffCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Sprite":
                 Debug.Log("Command: [Sprite]");
                 imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
@@ -212,7 +226,7 @@ public class ScenarioManager : MonoBehaviour
                 break;
             case "ToEscape":
                 Debug.Log("Command: [ToEspace]");
-                sceneController.ChangeToEscapeMode();
+                ChangeToEscapeMode();
                 escapeManager.ToEscape(scenario.Arg1);
                 breakLoop = true;
                 break;
@@ -249,10 +263,49 @@ public class ScenarioManager : MonoBehaviour
         scenarioId = ScenarioRepository.FindByCommand(dest).Id;
     }
 
+    public void ShowCommandLog(Scenario scenario)
+    {
+        Debug.Log("(Senario.id:" + scenario.Id + ") => Command: [" + scenario.Command + "]");
+    }
+
     public void OnSelectionSelected(int index)
     {
         scenarioId += index;
+
+        // Selectionを非表示にする
+        for (int i = 0; i < ScenarioView.NumOfSelectionButtons; i++)
+        {
+            ScenarioView.ToggleSelectionButtonIsActive(i, false);
+        }
+        // Jumpさせる
         JumpTo(ScenarioRepository.FindById(scenarioId).Arg1);
+
+        isClickable = true;
         Next();
+    }
+
+    public void ChangeToEscapeMode()
+    {
+        isEscapeMode = true;
+        ScenarioView.ToggleNamePanelIsActive(false);
+        ScenarioView.ToggleContentPanelIsActive(false);
+    }
+
+    public void ChangeToScenarioMode(string dest)
+    {
+        isEscapeMode = false;
+        ScenarioView.ToggleNamePanelIsActive(true);
+        ScenarioView.ToggleContentPanelIsActive(true);
+        ScenarioView.UpdateEscapeBackground(null);
+        ScenarioView.ToggleEscapeButtonIsActive(EscapeButtonType.RIGHT, false);
+        ScenarioView.ToggleEscapeButtonIsActive(EscapeButtonType.LEFT, false);
+        ScenarioView.ToggleEscapeButtonIsActive(EscapeButtonType.DOWN, false);
+        JumpTo(dest);
+        Next();
+    }
+
+    public void OnEscapeButtonDown(EscapeButtonType type)
+    {
+        escapeManager.OnEscapeButtonDown(type);
     }
 }
