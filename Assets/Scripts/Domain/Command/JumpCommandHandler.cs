@@ -6,16 +6,18 @@ public class JumpCommandHandler : ScenarioCommandHandler
 {
     public class Options : CommandOptions
     {
-        public Scenario Scenario { get; private set; }
+        public string DestinationName { get; private set; }
+        public string Conditions { get; private set; }
 
-        Options(Scenario scenario)
+        Options(string destinationName, string conditions)
         {
-            Scenario = scenario;
+            DestinationName = destinationName;
+            Conditions = conditions;
         }
 
         public static Options Create(Scenario scenario)
         {
-            return new Options(scenario);
+            return new Options(scenario.Arg1, scenario.Arg2);
         }
     }
 
@@ -31,6 +33,6 @@ public class JumpCommandHandler : ScenarioCommandHandler
 
     void OnCommandBg(Options options)
     {
-        if (ConditionHelper.IsAllConditionValid(options.Scenario.Arg2)) scenarioManager.JumpTo(options.Scenario.Arg1);
+        if (ConditionHelper.IsAllConditionValid(options.Conditions)) scenarioManager.JumpTo(options.DestinationName);
     }
 }

@@ -24,14 +24,9 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayVoice(string path, float volume = defaultVolume)
+    public void PlayVoice(AudioClip clip, float volume)
     {
-        AudioClip clip = Resources.Load<AudioClip>(path);
-        if (clip == null)
-        {
-            Debug.LogWarning("Voice Error: [" + path + "] not found");
-            return;
-        }
+        if (volume <= 0) volume = defaultVolume;
         voice.clip = clip;
         voice.volume = volume;
         voice.Play();

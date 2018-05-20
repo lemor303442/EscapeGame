@@ -6,16 +6,31 @@ public class TextCommandHandler : ScenarioCommandHandler
 {
     public class Options : CommandOptions
     {
-        public Scenario Scenario { get; private set; }
+        public string Name { get; private set; }
+        public string Content { get; private set; }
+        public AudioClip VoiceClip { get; private set; }
+        public float VoiceVolume { get; private set; }
+        public float TextSpeed { get; private set; }
 
-        Options(Scenario scenario)
+        Options(string name, string content, AudioClip voiceClip, float voiceVolume, float textSpeed)
         {
-            Scenario = scenario;
+            Name = name;
+            Content = content;
+            VoiceClip = voiceClip;
+            VoiceVolume = voiceVolume;
+            TextSpeed = textSpeed;
         }
 
         public static Options Create(Scenario scenario)
         {
-            return new Options(scenario);
+            AudioClip clip = Resources.Load<AudioClip>(scenario.Arg2);
+            return new Options(
+                scenario.Arg1,
+                scenario.Text,
+                clip,
+                string.IsNullOrEmpty(scenario.Arg3) ? 0 : float.Parse(scenario.Arg3),
+                string.IsNullOrEmpty(scenario.Arg4) ? 0 : float.Parse(scenario.Arg4)
+            );
         }
     }
 
@@ -32,21 +47,15 @@ public class TextCommandHandler : ScenarioCommandHandler
     void OnCommandBg(Options options)
     {
         //名前の表示
-        scenarioManager.ScenarioView.UpdateNameText(options.Scenario.Arg1);
+        scenarioManager.ScenarioView.UpdateNameText(options.Name);
 
         //テキストの表示
-        if (string.IsNullOrEmpty(options.Scenario.Arg4))
-            scenarioManager.ScenarioView.UpdateContentText(options.Scenario.Text);
-        else
-            scenarioManager.ScenarioView.UpdateContentText(options.Scenario.Text, float.Parse(options.Scenario.Arg4));
-        
+        scenarioManager.ScenarioView.UpdateContentText(options.Content, options.TextSpeed);
+
         //ボイスの再生
-        if (!string.IsNullOrEmpty(options.Scenario.Arg2))
+        if (options.VoiceClip != null)
         {
-            if (string.IsNullOrEmpty(options.Scenario.Arg3))
-                AudioManager.Instance.PlayVoice(options.Scenario.Arg2);
-            else
-                AudioManager.Instance.PlayVoice(options.Scenario.Arg2, float.Parse(options.Scenario.Arg3));
+                AudioManager.Instance.PlayVoice(options.VoiceClip, options.VoiceVolume);
         }
     }
 }

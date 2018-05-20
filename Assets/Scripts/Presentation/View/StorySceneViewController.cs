@@ -57,11 +57,6 @@ public class StorySceneViewController : MonoBehaviour
         nameText.text = name;
     }
 
-    public void UpdateContentText(string content)
-    {
-        textComponentHelper.SetNextLine(TextHelper.ReplaceTextTags(content));
-    }
-
     public void UpdateContentText(string content, float speed)
     {
         textComponentHelper.SetNextLine(TextHelper.ReplaceTextTags(content), speed);
