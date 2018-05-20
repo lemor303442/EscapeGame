@@ -12,7 +12,6 @@ public class ScenarioManager : MonoBehaviour
 {
     StorySceneController sceneController;
     ImageManager imageManager;
-    ItemManager itemManager;
     ParamManager paramManager;
     EscapeManager escapeManager;
     AnimatorManager animatorManager;
@@ -33,6 +32,7 @@ public class ScenarioManager : MonoBehaviour
     BgmCommandHandler bgmCommandHandler;
     AmbienceCommandHandler ambienceCommandHandler;
     SoundEffectCommandHandler soundEffectCommandHandler;
+    ItemCommandHandler itemCommandHandler;
 
     public StorySceneViewController ScenarioView
     {
@@ -44,7 +44,6 @@ public class ScenarioManager : MonoBehaviour
         sceneController = GameObject.FindObjectOfType<StorySceneController>();
         imageManager = GameObject.FindObjectOfType<ImageManager>();
         imageManager.Init();
-        itemManager = GameObject.FindObjectOfType<ItemManager>();
         paramManager = GameObject.FindObjectOfType<ParamManager>();
         escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         escapeManager.Init();
@@ -63,6 +62,7 @@ public class ScenarioManager : MonoBehaviour
         bgmCommandHandler = new BgmCommandHandler(this);
         ambienceCommandHandler = new AmbienceCommandHandler(this);
         soundEffectCommandHandler = new SoundEffectCommandHandler(this);
+        itemCommandHandler = new ItemCommandHandler(this);
     }
 
     public void OnClick(Vector2 touchPos)
@@ -233,10 +233,12 @@ public class ScenarioManager : MonoBehaviour
                     break;
                 }
             case "Item":
-                Debug.Log("Command: [Item]");
-                itemManager.ToggleItemIsOwned(scenario.Arg1, System.Convert.ToBoolean(scenario.Arg2));
-                scenarioId++;
-                break;
+                {
+                    var options = ItemCommandHandler.Options.Create(scenario);
+                    itemCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Param":
                 Debug.Log("Command: [Param]");
                 paramManager.UpdateParam(scenario.Arg1);
