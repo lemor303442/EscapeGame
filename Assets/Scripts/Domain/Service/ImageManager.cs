@@ -12,12 +12,12 @@ public class ImageManager : MonoBehaviour
         sceneController.viewController.CreateLayers(LayerRepository.All);
     }
 
-    public void UpdateBackgroundImage(string layerName, string imgPath)
+    public void UpdateLayerImage(string layerName, string imgPath)
     {
         Sprite image = Resources.Load<Sprite>(imgPath);
         if (image == null)
         {
-            Debug.LogWarning("Bg Error: [" + imgPath + "] not found");
+            Debug.LogWarning("Sprite Load Error: [" + imgPath + "] not found");
             return;
         }
         sceneController.viewController.UpdateLayerImage(LayerRepository.FindByName(layerName), image);

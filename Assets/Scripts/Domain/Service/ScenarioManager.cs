@@ -115,11 +115,21 @@ public class ScenarioManager : MonoBehaviour
                 break;
             case "Bg":
                 Debug.Log("Command: [Bg]");
-                imageManager.UpdateBackgroundImage(scenario.Arg1, scenario.Arg2);
+                imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
                 scenarioId++;
                 break;
             case "BgOff":
                 Debug.Log("Command: [BgOff]");
+                imageManager.RemoveLayerImage(scenario.Arg1);
+                scenarioId++;
+                break;
+            case "Sprite":
+                Debug.Log("Command: [Sprite]");
+                imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
+                scenarioId++;
+                break;
+            case "SpriteOff":
+                Debug.Log("Command: [SpriteOff]");
                 imageManager.RemoveLayerImage(scenario.Arg1);
                 scenarioId++;
                 break;
