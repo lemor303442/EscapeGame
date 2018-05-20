@@ -51,14 +51,9 @@ public class AudioManager : MonoBehaviour
         bgm.Stop();
     }
 
-    public void PlayAmbience(string path, float volume = defaultVolume)
+    public void PlayAmbience(AudioClip clip, float volume)
     {
-        AudioClip clip = Resources.Load<AudioClip>(path);
-        if (clip == null)
-        {
-            Debug.LogWarning("Ambience Error: [" + path + "] not found");
-            return;
-        }
+        if (volume <= 0) volume = defaultVolume;
         ambience.clip = clip;
         ambience.volume = volume;
         ambience.Play();
@@ -69,14 +64,9 @@ public class AudioManager : MonoBehaviour
         ambience.Stop();
     }
 
-    public void PlaySoundEffect(string path, float volume = defaultVolume)
+    public void PlaySoundEffect(AudioClip clip, float volume)
     {
-        AudioClip clip = Resources.Load<AudioClip>(path);
-        if (clip == null)
-        {
-            Debug.LogWarning("Ambience Error: [" + path + "] not found");
-            return;
-        }
+        if (volume <= 0) volume = defaultVolume;
         soundEffect.clip = clip;
         soundEffect.volume = volume;
         soundEffect.Play();

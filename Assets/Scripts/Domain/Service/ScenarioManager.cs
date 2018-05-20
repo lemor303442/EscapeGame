@@ -11,7 +11,6 @@ using System.Text.RegularExpressions;
 public class ScenarioManager : MonoBehaviour
 {
     StorySceneController sceneController;
-    AudioManager audioManager;
     ImageManager imageManager;
     ItemManager itemManager;
     ParamManager paramManager;
@@ -32,6 +31,8 @@ public class ScenarioManager : MonoBehaviour
     CharacterCommandHandler characterCommandHandler;
     CharacterOffCommandHandler characterOffCommandHandler;
     BgmCommandHandler bgmCommandHandler;
+    AmbienceCommandHandler ambienceCommandHandler;
+    SoundEffectCommandHandler soundEffectCommandHandler;
 
     public StorySceneViewController ScenarioView
     {
@@ -41,7 +42,6 @@ public class ScenarioManager : MonoBehaviour
     public void Init()
     {
         sceneController = GameObject.FindObjectOfType<StorySceneController>();
-        audioManager = GameObject.FindObjectOfType<AudioManager>();
         imageManager = GameObject.FindObjectOfType<ImageManager>();
         imageManager.Init();
         itemManager = GameObject.FindObjectOfType<ItemManager>();
@@ -61,6 +61,8 @@ public class ScenarioManager : MonoBehaviour
         characterCommandHandler = new CharacterCommandHandler(this);
         characterOffCommandHandler = new CharacterOffCommandHandler(this);
         bgmCommandHandler = new BgmCommandHandler(this);
+        ambienceCommandHandler = new AmbienceCommandHandler(this);
+        soundEffectCommandHandler = new SoundEffectCommandHandler(this);
     }
 
     public void OnClick(Vector2 touchPos)
@@ -188,45 +190,48 @@ public class ScenarioManager : MonoBehaviour
                 }
             case "BgmOff":
                 {
-                    audioManager.StopBgm();
+                    AudioManager.Instance.StopBgm();
                     scenarioId++;
                     break;
                 }
             case "Ambience":
-                Debug.Log("Command: [Ambience]");
-                if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlayAmbience(scenario.Arg1);
-                else audioManager.PlayAmbience(scenario.Arg1, float.Parse(scenario.Arg2));
-                scenarioId++;
-                break;
+                {
+                    var options = AmbienceCommandHandler.Options.Create(scenario);
+                    ambienceCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "AmbienceOff":
                 {
-                    audioManager.StopAmbience();
+                    AudioManager.Instance.StopAmbience();
                     scenarioId++;
                     break;
                 }
             case "SoundEffect":
-                Debug.Log("Command: [SoundEffect]");
-                if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlaySoundEffect(scenario.Arg1);
-                else audioManager.PlaySoundEffect(scenario.Arg1, float.Parse(scenario.Arg2));
-                scenarioId++;
-                break;
+                {
+                    var options = SoundEffectCommandHandler.Options.Create(scenario);
+                    soundEffectCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "SoundEffectOff":
                 {
-                    audioManager.StopSoundEffect();
+                    AudioManager.Instance.StopSoundEffect();
                     scenarioId++;
                     break;
                 }
             case "StopAllSound":
                 {
-                    audioManager.StopAllSound();
+                    AudioManager.Instance.StopAllSound();
                     scenarioId++;
                     break;
                 }
             case "ChangeScene":
-                Debug.Log("Command: [ChangeScene]");
-                SceneManager.LoadScene(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    SceneManager.LoadScene(scenario.Arg1);
+                    scenarioId++;
+                    break;
+                }
             case "Item":
                 Debug.Log("Command: [Item]");
                 itemManager.ToggleItemIsOwned(scenario.Arg1, System.Convert.ToBoolean(scenario.Arg2));
@@ -244,25 +249,28 @@ public class ScenarioManager : MonoBehaviour
                 breakLoop = true;
                 break;
             case "InstantiatePrefab":
-                Debug.Log("Command: [InstantiatePrefab]");
-                GameObject clone = Instantiate<GameObject>(
-                    Resources.Load<GameObject>(scenario.Arg1),
-                    new Vector3(float.Parse(scenario.Arg3), float.Parse(scenario.Arg4), float.Parse(scenario.Arg5)),
-                    Quaternion.identity
-                );
-                clone.name = scenario.Arg2;
-                scenarioId++;
-                break;
+                {
+                    GameObject clone = Instantiate<GameObject>(
+                        Resources.Load<GameObject>(scenario.Arg1),
+                        new Vector3(float.Parse(scenario.Arg3), float.Parse(scenario.Arg4), float.Parse(scenario.Arg5)),
+                        Quaternion.identity
+                    );
+                    clone.name = scenario.Arg2;
+                    scenarioId++;
+                    break;
+                }
             case "AnimatorSetTrigger":
-                Debug.Log("Command: [AnimatorSetTrigger]");
-                animatorManager.SetTrigger(scenario.Arg1, scenario.Arg2);
-                scenarioId++;
-                break;
+                {
+                    animatorManager.SetTrigger(scenario.Arg1, scenario.Arg2);
+                    scenarioId++;
+                    break;
+                }
             case "DestoryGameObject":
-                Debug.Log("Command: [DestoryGameObject]");
-                Destroy(GameObject.Find(scenario.Arg1));
-                scenarioId++;
-                break;
+                {
+                    Destroy(GameObject.Find(scenario.Arg1));
+                    scenarioId++;
+                    break;
+                }
             default:
                 Debug.LogWarning("Unkown command [" + scenario.Command + "]");
                 breakLoop = true;
