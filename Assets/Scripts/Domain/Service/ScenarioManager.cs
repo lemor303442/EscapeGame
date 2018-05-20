@@ -12,7 +12,6 @@ public class ScenarioManager : MonoBehaviour
 {
     StorySceneController sceneController;
     ImageManager imageManager;
-    ParamManager paramManager;
     EscapeManager escapeManager;
     AnimatorManager animatorManager;
 
@@ -33,6 +32,7 @@ public class ScenarioManager : MonoBehaviour
     AmbienceCommandHandler ambienceCommandHandler;
     SoundEffectCommandHandler soundEffectCommandHandler;
     ItemCommandHandler itemCommandHandler;
+    ParamCommandHandler paramCommandHandler;
 
     public StorySceneViewController ScenarioView
     {
@@ -44,7 +44,6 @@ public class ScenarioManager : MonoBehaviour
         sceneController = GameObject.FindObjectOfType<StorySceneController>();
         imageManager = GameObject.FindObjectOfType<ImageManager>();
         imageManager.Init();
-        paramManager = GameObject.FindObjectOfType<ParamManager>();
         escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         escapeManager.Init();
         animatorManager = GameObject.FindObjectOfType<AnimatorManager>();
@@ -63,6 +62,7 @@ public class ScenarioManager : MonoBehaviour
         ambienceCommandHandler = new AmbienceCommandHandler(this);
         soundEffectCommandHandler = new SoundEffectCommandHandler(this);
         itemCommandHandler = new ItemCommandHandler(this);
+        paramCommandHandler = new ParamCommandHandler(this);
     }
 
     public void OnClick(Vector2 touchPos)
@@ -240,10 +240,12 @@ public class ScenarioManager : MonoBehaviour
                     break;
                 }
             case "Param":
-                Debug.Log("Command: [Param]");
-                paramManager.UpdateParam(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    var options = ParamCommandHandler.Options.Create(scenario);
+                    paramCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "ToEscape":
                 Debug.Log("Command: [ToEspace]");
                 ChangeToEscapeMode();
@@ -262,11 +264,9 @@ public class ScenarioManager : MonoBehaviour
                     break;
                 }
             case "AnimatorSetTrigger":
-                {
-                    animatorManager.SetTrigger(scenario.Arg1, scenario.Arg2);
-                    scenarioId++;
-                    break;
-                }
+                animatorManager.SetTrigger(scenario.Arg1, scenario.Arg2);
+                scenarioId++;
+                break;
             case "DestoryGameObject":
                 {
                     Destroy(GameObject.Find(scenario.Arg1));
