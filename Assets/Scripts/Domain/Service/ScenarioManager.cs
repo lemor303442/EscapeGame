@@ -27,6 +27,8 @@ public class ScenarioManager : MonoBehaviour
     BgCommandHandler bgCommandHandler;
     BgOffCommandHandler bgOffCommandHandler;
     SelectionCommandHandler selectionCommandHandler;
+    SpriteCommandHandler spriteCommandHandler;
+    SpriteOffCommandHandler spriteOffCommandHandler;
 
     public StorySceneViewController ScenarioView
     {
@@ -51,6 +53,8 @@ public class ScenarioManager : MonoBehaviour
         bgOffCommandHandler = new BgOffCommandHandler(this);
         jumpCommandHandler = new JumpCommandHandler(this);
         selectionCommandHandler = new SelectionCommandHandler(this);
+        spriteCommandHandler = new SpriteCommandHandler(this);
+        spriteOffCommandHandler = new SpriteOffCommandHandler(this);
     }
 
     public void OnClick(Vector2 touchPos)
@@ -129,7 +133,6 @@ public class ScenarioManager : MonoBehaviour
                 }
             case "Bg":
                 {
-                    // imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
                     var options = BgCommandHandler.Options.Create(scenario);
                     bgCommandHandler.OnCommand(options);
                     scenarioId++;
@@ -137,22 +140,25 @@ public class ScenarioManager : MonoBehaviour
                 }
             case "BgOff":
                 {
-                    //imageManager.RemoveLayerImage(scenario.Arg1);
                     var options = BgOffCommandHandler.Options.Create(scenario);
                     bgOffCommandHandler.OnCommand(options);
                     scenarioId++;
                     break;
                 }
             case "Sprite":
-                Debug.Log("Command: [Sprite]");
-                imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
-                scenarioId++;
-                break;
+                {
+                    var options = SpriteCommandHandler.Options.Create(scenario);
+                    spriteCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "SpriteOff":
-                Debug.Log("Command: [SpriteOff]");
-                imageManager.RemoveLayerImage(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    var options = SpriteOffCommandHandler.Options.Create(scenario);
+                    spriteOffCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Character":
                 Debug.Log("Command: [Character]");
                 imageManager.UpdateCharacterImage(scenario.Arg1, scenario.Arg2, scenario.Arg3);
