@@ -16,6 +16,7 @@ public class ScenarioManager : MonoBehaviour
     ItemManager itemManager;
     ParamManager paramManager;
     EscapeManager escapeManager;
+    AnimatorManager animatorManager;
     int scenarioId = 0;
 
     public void Init()
@@ -28,6 +29,7 @@ public class ScenarioManager : MonoBehaviour
         paramManager = GameObject.FindObjectOfType<ParamManager>();
         escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         escapeManager.Init();
+        animatorManager = GameObject.FindObjectOfType<AnimatorManager>();
     }
 
     public void Next()
@@ -206,6 +208,11 @@ public class ScenarioManager : MonoBehaviour
                     Quaternion.identity
                 );
                 clone.name = scenario.Arg2;
+                scenarioId++;
+                break;
+            case "AnimatorSetTrigger":
+                Debug.Log("Command: [AnimatorSetTrigger]");
+                animatorManager.SetTrigger(scenario.Arg1, scenario.Arg2);
                 scenarioId++;
                 break;
             default:
