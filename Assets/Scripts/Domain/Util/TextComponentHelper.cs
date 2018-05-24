@@ -34,7 +34,7 @@ public class TextComponentHelper
 	public void Update ()
 	{
 		int displayCharacterCount = (int)(Mathf.Clamp01 ((Time.time - timeElapsed) / timeUntilDisplay) * currentText.Length);
-		if (displayCharacterCount != lastUpdateCharacter) {
+        if (displayCharacterCount != lastUpdateCharacter && displayCharacterCount > 0) {
 			uiText.text = currentText.Substring (0, displayCharacterCount);
 			lastUpdateCharacter = displayCharacterCount;
 		}
