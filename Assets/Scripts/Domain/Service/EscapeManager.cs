@@ -72,7 +72,7 @@ public class EscapeManager : MonoBehaviour
             {
                 if (Regex.IsMatch(escapeInput.JumpTo, @"^\*"))
                 {
-                    sceneController.ChangeToScenarioMode(escapeInput.JumpTo);
+                    GameObject.FindObjectOfType<ScenarioManager>().ChangeToScenarioMode(escapeInput.JumpTo);
                 }
                 else
                 {

@@ -11,25 +11,78 @@ using System.Text.RegularExpressions;
 public class ScenarioManager : MonoBehaviour
 {
     StorySceneController sceneController;
-    AudioManager audioManager;
     ImageManager imageManager;
-    ItemManager itemManager;
-    ParamManager paramManager;
     EscapeManager escapeManager;
     AnimatorManager animatorManager;
+
+    bool isClickable = false;
+    bool isEscapeMode = false;
     int scenarioId = 0;
+
+    TextCommandHandler textCommandHandler;
+    JumpCommandHandler jumpCommandHandler;
+    BgCommandHandler bgCommandHandler;
+    BgOffCommandHandler bgOffCommandHandler;
+    SelectionCommandHandler selectionCommandHandler;
+    SpriteCommandHandler spriteCommandHandler;
+    SpriteOffCommandHandler spriteOffCommandHandler;
+    CharacterCommandHandler characterCommandHandler;
+    CharacterOffCommandHandler characterOffCommandHandler;
+    BgmCommandHandler bgmCommandHandler;
+    AmbienceCommandHandler ambienceCommandHandler;
+    SoundEffectCommandHandler soundEffectCommandHandler;
+    ItemCommandHandler itemCommandHandler;
+    ParamCommandHandler paramCommandHandler;
+
+    public StorySceneViewController ScenarioView
+    {
+        get { return sceneController.viewController; }
+    }
 
     public void Init()
     {
         sceneController = GameObject.FindObjectOfType<StorySceneController>();
-        audioManager = GameObject.FindObjectOfType<AudioManager>();
         imageManager = GameObject.FindObjectOfType<ImageManager>();
         imageManager.Init();
-        itemManager = GameObject.FindObjectOfType<ItemManager>();
-        paramManager = GameObject.FindObjectOfType<ParamManager>();
         escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         escapeManager.Init();
         animatorManager = GameObject.FindObjectOfType<AnimatorManager>();
+
+        isClickable = true;
+        textCommandHandler = new TextCommandHandler(this);
+        bgCommandHandler = new BgCommandHandler(this);
+        bgOffCommandHandler = new BgOffCommandHandler(this);
+        jumpCommandHandler = new JumpCommandHandler(this);
+        selectionCommandHandler = new SelectionCommandHandler(this);
+        spriteCommandHandler = new SpriteCommandHandler(this);
+        spriteOffCommandHandler = new SpriteOffCommandHandler(this);
+        characterCommandHandler = new CharacterCommandHandler(this);
+        characterOffCommandHandler = new CharacterOffCommandHandler(this);
+        bgmCommandHandler = new BgmCommandHandler(this);
+        ambienceCommandHandler = new AmbienceCommandHandler(this);
+        soundEffectCommandHandler = new SoundEffectCommandHandler(this);
+        itemCommandHandler = new ItemCommandHandler(this);
+        paramCommandHandler = new ParamCommandHandler(this);
+    }
+
+    public void OnClick(Vector2 touchPos)
+    {
+        if (isEscapeMode)
+        {
+            escapeManager.OnClick(touchPos);
+            return;
+        }
+        if (isClickable)
+        {
+            if (ScenarioView.IsCompleteDisplayText)
+            {
+                Next();
+            }
+            else
+            {
+                ScenarioView.CompleteDisplayText();
+            }
+        }
     }
 
     public void Next()
@@ -61,172 +114,166 @@ public class ScenarioManager : MonoBehaviour
     private bool CommandFunc(Scenario scenario)
     {
         bool breakLoop = false;
+        ShowCommandLog(scenario);
         switch (scenario.Command)
         {
             case "":
-                Debug.Log("Command: [Text]");
-                // テキストの表示
-                if (string.IsNullOrEmpty(scenario.Arg4))
-                    sceneController.ShowNextText(scenario.Arg1, scenario.Text);
-                else
-                    sceneController.ShowNextText(scenario.Arg1, scenario.Text, float.Parse(scenario.Arg4));
-                // ボイスの再生
-                if (!string.IsNullOrEmpty(scenario.Arg2))
                 {
-                    if (string.IsNullOrEmpty(scenario.Arg3))
-                        audioManager.PlayVoice(scenario.Arg2);
-                    else
-                        audioManager.PlayVoice(scenario.Arg2, float.Parse(scenario.Arg3));
+                    var options = TextCommandHandler.Options.Create(scenario);
+                    textCommandHandler.OnCommand(options);
+                    breakLoop = true;
+                    break;
                 }
-                breakLoop = true;
-                break;
             case "Jump":
-                Debug.Log("Command: [Jump]");
-                // ジャンプ先へ移動
-                if(ConditionHelper.IsAllConditionValid(scenario.Arg2)) JumpTo(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    var options = JumpCommandHandler.Options.Create(scenario);
+                    jumpCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Selection":
-                Debug.Log("Command: [Selection]");
-                List<Scenario> selectionList = ScenarioRepository.GetSelections(scenarioId);
-                // 条件を満たしていないselectionを削除
-                List<int> removeSelectionId = new List<int>();
-                foreach (Scenario selection in selectionList)
                 {
-                    if (!ConditionHelper.IsAllConditionValid(scenario.Arg2))
-                    {
-                        removeSelectionId.Add(selection.Id);
-                        break;
-                    }
-
+                    var options = SelectionCommandHandler.Options.Create(scenario);
+                    selectionCommandHandler.OnCommand(options);
+                    isClickable = false;
+                    breakLoop = true;
+                    break;
                 }
-                foreach (int i in removeSelectionId)
-                {
-                    selectionList.RemoveAll(x => x.Id == i);
-                }
-
-                // Selectionを表示
-                sceneController.ShowSelections(selectionList);
-                breakLoop = true;
-                Debug.Log("break selection loop");
-                break;
             case "Bg":
-                Debug.Log("Command: [Bg]");
-                imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
-                scenarioId++;
-                break;
+                {
+                    var options = BgCommandHandler.Options.Create(scenario);
+                    bgCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "BgOff":
-                Debug.Log("Command: [BgOff]");
-                imageManager.RemoveLayerImage(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    var options = BgOffCommandHandler.Options.Create(scenario);
+                    bgOffCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Sprite":
-                Debug.Log("Command: [Sprite]");
-                imageManager.UpdateLayerImage(scenario.Arg1, scenario.Arg2);
-                scenarioId++;
-                break;
+                {
+                    var options = SpriteCommandHandler.Options.Create(scenario);
+                    spriteCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "SpriteOff":
-                Debug.Log("Command: [SpriteOff]");
-                imageManager.RemoveLayerImage(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    var options = SpriteOffCommandHandler.Options.Create(scenario);
+                    spriteOffCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Character":
-                Debug.Log("Command: [Character]");
-                imageManager.UpdateCharacterImage(scenario.Arg1, scenario.Arg2, scenario.Arg3);
-                scenarioId++;
-                break;
+                {
+                    var options = CharacterCommandHandler.Options.Create(scenario);
+                    characterCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "CharacterOff":
-                Debug.Log("Command: [CharacterOff]");
-                imageManager.RemoveLayerImage(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    var options = CharacterOffCommandHandler.Options.Create(scenario);
+                    characterOffCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Bgm":
-                Debug.Log("Command: [Bgm]");
-                if (string.IsNullOrEmpty(scenario.Arg3))
                 {
-                    if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlayBgm(scenario.Arg1);
-                    else audioManager.PlayBgm(scenario.Arg1, float.Parse(scenario.Arg2));
+                    var options = BgmCommandHandler.Options.Create(scenario);
+                    bgmCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
                 }
-                else
-                {
-                    if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlayBgmWithStartTime(scenario.Arg1, float.Parse(scenario.Arg3));
-                    else audioManager.PlayBgmWithStartTime(scenario.Arg1, float.Parse(scenario.Arg3), float.Parse(scenario.Arg2));
-                }
-                scenarioId++;
-                break;
             case "BgmOff":
-                Debug.Log("Command: [BgmOff]");
-                audioManager.StopBgm();
-                scenarioId++;
-                break;
+                {
+                    AudioManager.Instance.StopBgm();
+                    scenarioId++;
+                    break;
+                }
             case "Ambience":
-                Debug.Log("Command: [Ambience]");
-                if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlayAmbience(scenario.Arg1);
-                else audioManager.PlayAmbience(scenario.Arg1, float.Parse(scenario.Arg2));
-                scenarioId++;
-                break;
+                {
+                    var options = AmbienceCommandHandler.Options.Create(scenario);
+                    ambienceCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "AmbienceOff":
-                Debug.Log("Command: [AmbienceOff]");
-                audioManager.StopAmbience();
-                scenarioId++;
-                break;
+                {
+                    AudioManager.Instance.StopAmbience();
+                    scenarioId++;
+                    break;
+                }
             case "SoundEffect":
-                Debug.Log("Command: [SoundEffect]");
-                if (string.IsNullOrEmpty(scenario.Arg2)) audioManager.PlaySoundEffect(scenario.Arg1);
-                else audioManager.PlaySoundEffect(scenario.Arg1, float.Parse(scenario.Arg2));
-                scenarioId++;
-                break;
+                {
+                    var options = SoundEffectCommandHandler.Options.Create(scenario);
+                    soundEffectCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "SoundEffectOff":
-                Debug.Log("Command: [SoundEffectOff]");
-                audioManager.StopSoundEffect();
-                scenarioId++;
-                break;
+                {
+                    AudioManager.Instance.StopSoundEffect();
+                    scenarioId++;
+                    break;
+                }
             case "StopAllSound":
-                Debug.Log("Command: [StopAllSound]");
-                audioManager.StopAllSound();
-                scenarioId++;
-                break;
+                {
+                    AudioManager.Instance.StopAllSound();
+                    scenarioId++;
+                    break;
+                }
             case "ChangeScene":
-                Debug.Log("Command: [ChangeScene]");
-                SceneManager.LoadScene(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    SceneManager.LoadScene(scenario.Arg1);
+                    scenarioId++;
+                    break;
+                }
             case "Item":
-                Debug.Log("Command: [Item]");
-                itemManager.ToggleItemIsOwned(scenario.Arg1, System.Convert.ToBoolean(scenario.Arg2));
-                scenarioId++;
-                break;
+                {
+                    var options = ItemCommandHandler.Options.Create(scenario);
+                    itemCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "Param":
-                Debug.Log("Command: [Param]");
-                paramManager.UpdateParam(scenario.Arg1);
-                scenarioId++;
-                break;
+                {
+                    var options = ParamCommandHandler.Options.Create(scenario);
+                    paramCommandHandler.OnCommand(options);
+                    scenarioId++;
+                    break;
+                }
             case "ToEscape":
-                Debug.Log("Command: [ToEspace]");
-                sceneController.ChangeToEscapeMode();
-                escapeManager.ToEscape(scenario.Arg1);
-                breakLoop = true;
-                break;
+                {
+                    ChangeToEscapeMode();
+                    escapeManager.ToEscape(scenario.Arg1);
+                    breakLoop = true;
+                    break;
+                }
             case "InstantiatePrefab":
-                Debug.Log("Command: [InstantiatePrefab]");
-                GameObject clone = Instantiate<GameObject>(
-                    Resources.Load<GameObject>(scenario.Arg1),
-                    new Vector3(float.Parse(scenario.Arg3), float.Parse(scenario.Arg4), float.Parse(scenario.Arg5)),
-                    Quaternion.identity
-                );
-                clone.name = scenario.Arg2;
-                scenarioId++;
-                break;
+                {
+                    GameObject clone = Instantiate<GameObject>(
+                        Resources.Load<GameObject>(scenario.Arg1),
+                        new Vector3(float.Parse(scenario.Arg3), float.Parse(scenario.Arg4), float.Parse(scenario.Arg5)),
+                        Quaternion.identity
+                    );
+                    clone.name = scenario.Arg2;
+                    scenarioId++;
+                    break;
+                }
             case "AnimatorSetTrigger":
-                Debug.Log("Command: [AnimatorSetTrigger]");
                 animatorManager.SetTrigger(scenario.Arg1, scenario.Arg2);
                 scenarioId++;
                 break;
             case "DestoryGameObject":
-                Debug.Log("Command: [DestoryGameObject]");
-                Destroy(GameObject.Find(scenario.Arg1));
-                scenarioId++;
-                break;
+                {
+                    Destroy(GameObject.Find(scenario.Arg1));
+                    scenarioId++;
+                    break;
+                }
             default:
                 Debug.LogWarning("Unkown command [" + scenario.Command + "]");
                 breakLoop = true;
@@ -240,10 +287,49 @@ public class ScenarioManager : MonoBehaviour
         scenarioId = ScenarioRepository.FindByCommand(dest).Id;
     }
 
+    public void ShowCommandLog(Scenario scenario)
+    {
+        Debug.Log("(Senario.id:" + scenario.Id + ") => Command: [" + scenario.Command + "]");
+    }
+
     public void OnSelectionSelected(int index)
     {
         scenarioId += index;
+
+        // Selectionを非表示にする
+        for (int i = 0; i < ScenarioView.NumOfSelectionButtons; i++)
+        {
+            ScenarioView.ToggleSelectionButtonIsActive(i, false);
+        }
+        // Jumpさせる
         JumpTo(ScenarioRepository.FindById(scenarioId).Arg1);
+
+        isClickable = true;
         Next();
+    }
+
+    public void ChangeToEscapeMode()
+    {
+        isEscapeMode = true;
+        ScenarioView.ToggleNamePanelIsActive(false);
+        ScenarioView.ToggleContentPanelIsActive(false);
+    }
+
+    public void ChangeToScenarioMode(string dest)
+    {
+        isEscapeMode = false;
+        ScenarioView.ToggleNamePanelIsActive(true);
+        ScenarioView.ToggleContentPanelIsActive(true);
+        ScenarioView.UpdateEscapeBackground(null);
+        ScenarioView.ToggleEscapeButtonIsActive(EscapeButtonType.RIGHT, false);
+        ScenarioView.ToggleEscapeButtonIsActive(EscapeButtonType.LEFT, false);
+        ScenarioView.ToggleEscapeButtonIsActive(EscapeButtonType.DOWN, false);
+        JumpTo(dest);
+        Next();
+    }
+
+    public void OnEscapeButtonDown(EscapeButtonType type)
+    {
+        escapeManager.OnEscapeButtonDown(type);
     }
 }
