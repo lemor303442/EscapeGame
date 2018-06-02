@@ -7,7 +7,6 @@ public class StorySceneController : MonoBehaviour
     [HideInInspector]
     public StorySceneViewController viewController;
     ScenarioManager scenarioManager;
-    EscapeManager escapeManager;
 
     bool isDataReady = false;
 
@@ -23,7 +22,6 @@ public class StorySceneController : MonoBehaviour
         }
         viewController = GameObject.FindObjectOfType<StorySceneViewController>();
         scenarioManager = GameObject.FindObjectOfType<ScenarioManager>();
-        escapeManager = GameObject.FindObjectOfType<EscapeManager>();
         viewController.Init();
         scenarioManager.Init();
 
@@ -33,5 +31,9 @@ public class StorySceneController : MonoBehaviour
     void Update()
     {
         if (isDataReady && viewController.enabled == false) viewController.enabled = true;
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject.FindObjectOfType<ScenarioManager>().OnClick(TouchInput.position);
+        }
     }
 }

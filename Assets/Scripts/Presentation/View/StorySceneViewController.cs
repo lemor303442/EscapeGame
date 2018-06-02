@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 public class StorySceneViewController : MonoBehaviour
 {
-    StorySceneController sceneController;
-    public TextComponentHelper textComponentHelper;
+    TextComponentHelper textComponentHelper;
 
     [SerializeField] GameObject emptyObject;
     [SerializeField] Text nameText;
@@ -21,23 +20,20 @@ public class StorySceneViewController : MonoBehaviour
     [SerializeField] GameObject escapeButtonLeft;
 
     public int NumOfSelectionButtons { get { return selectionButtons.Length; } }
-
+    public bool IsCompleteDisplayText
+    {
+        get { return textComponentHelper.IsCompleteDisplayText; }
+    }
 
     public void Init()
     {
         enabled = false;
         textComponentHelper = new TextComponentHelper(contentText);
-
-        sceneController = GameObject.FindObjectOfType<StorySceneController>();
     }
 
     void Update()
     {
         textComponentHelper.Update();
-        if (Input.GetMouseButtonDown(0))
-        {
-            GameObject.FindObjectOfType<ScenarioManager>().OnClick(TouchInput.position);
-        }
     }
 
     public void ToggleNamePanelIsActive(bool flg)
@@ -211,6 +207,11 @@ public class StorySceneViewController : MonoBehaviour
             ToggleSelectionButtonIsActive(i, true);
             UpdateSelectionText(i, selectionList[i].Text);
         }
+    }
+
+    public void CompleteDisplayText()
+    {
+        textComponentHelper.CompleteDisplayText();
     }
 }
 

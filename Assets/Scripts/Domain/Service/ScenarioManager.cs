@@ -74,13 +74,13 @@ public class ScenarioManager : MonoBehaviour
         }
         if (isClickable)
         {
-            if (ScenarioView.textComponentHelper.IsCompleteDisplayText)
+            if (ScenarioView.IsCompleteDisplayText)
             {
                 Next();
             }
             else
             {
-                ScenarioView.textComponentHelper.CompleteDisplayText();
+                ScenarioView.CompleteDisplayText();
             }
         }
     }
