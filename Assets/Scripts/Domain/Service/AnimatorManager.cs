@@ -2,10 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnimatorManager : MonoBehaviour {
-    public void SetTrigger(string objName, string triggerName){
+public class AnimatorManager
+{
+
+    public AnimatorManager()
+    {
+
+    }
+
+    public void SetTrigger(string objName, string triggerName)
+    {
         GameObject targetObj = GameObject.Find(objName);
-        if (targetObj == null) {
+        if (targetObj == null)
+        {
             Debug.LogWarning("GameObject.name[" + objName + "] not found.");
             return;
         }

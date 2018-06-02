@@ -42,11 +42,9 @@ public class ScenarioManager : MonoBehaviour
     public void Init()
     {
         sceneController = GameObject.FindObjectOfType<StorySceneController>();
-        imageManager = GameObject.FindObjectOfType<ImageManager>();
-        imageManager.Init();
-        escapeManager = GameObject.FindObjectOfType<EscapeManager>();
-        escapeManager.Init();
-        animatorManager = GameObject.FindObjectOfType<AnimatorManager>();
+        imageManager = new ImageManager(sceneController);
+        escapeManager = new EscapeManager(sceneController);
+        animatorManager = new AnimatorManager();
 
         isClickable = true;
         textCommandHandler = new TextCommandHandler(this);
