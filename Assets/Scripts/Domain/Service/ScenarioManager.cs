@@ -247,11 +247,12 @@ public class ScenarioManager : MonoBehaviour
                     break;
                 }
             case "ToEscape":
-                Debug.Log("Command: [ToEspace]");
-                ChangeToEscapeMode();
-                escapeManager.ToEscape(scenario.Arg1);
-                breakLoop = true;
-                break;
+                {
+                    ChangeToEscapeMode();
+                    escapeManager.ToEscape(scenario.Arg1);
+                    breakLoop = true;
+                    break;
+                }
             case "InstantiatePrefab":
                 {
                     GameObject clone = Instantiate<GameObject>(
