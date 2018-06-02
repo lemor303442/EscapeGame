@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class AnimatorManager
 {
-
-    public AnimatorManager()
-    {
-
-    }
-
     public void SetTrigger(string objName, string triggerName)
     {
         GameObject targetObj = GameObject.Find(objName);
