@@ -81,6 +81,21 @@ public static class CsvHelper
         return csvSring.Remove(csvSring.Length - 1);
     }
 
+    public static string FormatListToCsv(List<Hint> list)
+    {
+        string csvSring = "";
+        csvSring += PropertyListToCsv(typeof(Hint)) + "\n";
+        foreach (Hint item in list)
+        {
+            csvSring += item.Id.ToString() + ","
+                            + item.JumpTo + ","
+                            + item.HintIndex.ToString() + ","
+                            + item.Conditions;
+            csvSring += "\n";
+        }
+        return csvSring.Remove(csvSring.Length - 1);
+    }
+
     public static string FormatListToCsv(List<Item> list)
     {
         string csvSring = "";

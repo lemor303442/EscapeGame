@@ -18,6 +18,7 @@ public class ScenarioManager : MonoBehaviour
     bool isClickable = false;
     bool isEscapeMode = false;
     int scenarioId = 0;
+    public int hintIndex = 0;
 
     TextCommandHandler textCommandHandler;
     JumpCommandHandler jumpCommandHandler;
@@ -43,7 +44,7 @@ public class ScenarioManager : MonoBehaviour
     {
         sceneController = GameObject.FindObjectOfType<StorySceneController>();
         imageManager = new ImageManager(sceneController);
-        escapeManager = new EscapeManager(sceneController);
+        escapeManager = new EscapeManager(sceneController, this);
         animatorManager = new AnimatorManager();
 
         isClickable = true;
@@ -272,6 +273,12 @@ public class ScenarioManager : MonoBehaviour
                     scenarioId++;
                     break;
                 }
+            case "HintIndex":
+                {
+                    hintIndex = int.Parse(scenario.Arg1);
+                    scenarioId++;
+                    break;
+                }
             default:
                 Debug.LogWarning("Unkown command [" + scenario.Command + "]");
                 breakLoop = true;
@@ -322,6 +329,7 @@ public class ScenarioManager : MonoBehaviour
         ScenarioView.ToggleEscapeButtonIsActive(EscapeButtonType.RIGHT, false);
         ScenarioView.ToggleEscapeButtonIsActive(EscapeButtonType.LEFT, false);
         ScenarioView.ToggleEscapeButtonIsActive(EscapeButtonType.DOWN, false);
+        sceneController.viewController.ToggleIsHintButtonShown(false);
         JumpTo(dest);
         Next();
     }
@@ -329,5 +337,10 @@ public class ScenarioManager : MonoBehaviour
     public void OnEscapeButtonDown(EscapeButtonType type)
     {
         escapeManager.OnEscapeButtonDown(type);
+    }
+
+    public void ShowHint()
+    {
+        ChangeToScenarioMode(HintHelper.GetHint(hintIndex).JumpTo);
     }
 }

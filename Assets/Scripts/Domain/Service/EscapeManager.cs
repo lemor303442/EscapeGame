@@ -6,22 +6,29 @@ public class EscapeManager
 {
     EscapeScene currentEscapeScene;
     StorySceneController sceneController;
+    ScenarioManager scenarioManager;
     List<EscapeInput> availableInputList;
 
 
-    public EscapeManager(StorySceneController _sceneController)
+    public EscapeManager(StorySceneController _sceneController, ScenarioManager _scenarioManager)
     {
         sceneController = _sceneController;
+        scenarioManager = _scenarioManager;
     }
 
-    public void ToEscape(string escapeSceneName)
+    public void ToEscape(string escapeSceneName = "")
     {
-        currentEscapeScene = EscapeSceneRepository.FindByName(escapeSceneName);
+        if (!string.IsNullOrEmpty(escapeSceneName))
+        {
+            currentEscapeScene = EscapeSceneRepository.FindByName(escapeSceneName);
+        }
         UpdateArrowButtons(currentEscapeScene);
         Sprite sprite = Resources.Load<Sprite>(currentEscapeScene.ImagePath);
         if (sprite == null) Debug.LogWarning("EscapeScene Error: [" + currentEscapeScene.ImagePath + "] not found");
         sceneController.viewController.UpdateEscapeBackground(sprite);
         availableInputList = GetAvailableInputList(currentEscapeScene);
+        if (HintHelper.IsHintVailable(scenarioManager.hintIndex)) sceneController.viewController.ToggleIsHintButtonShown(true);
+        else Debug.LogWarning("表示できるHintがありません。");
     }
 
     public void UpdateArrowButtons(EscapeScene scene)
@@ -73,7 +80,7 @@ public class EscapeManager
             {
                 if (Regex.IsMatch(escapeInput.JumpTo, @"^\*"))
                 {
-                    GameObject.FindObjectOfType<ScenarioManager>().ChangeToScenarioMode(escapeInput.JumpTo);
+                    scenarioManager.ChangeToScenarioMode(escapeInput.JumpTo);
                 }
                 else
                 {
