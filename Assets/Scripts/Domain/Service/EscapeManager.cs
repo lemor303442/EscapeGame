@@ -2,16 +2,16 @@
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-public class EscapeManager : MonoBehaviour
+public class EscapeManager
 {
     EscapeScene currentEscapeScene;
     StorySceneController sceneController;
     List<EscapeInput> availableInputList;
 
 
-    public void Init()
+    public EscapeManager(StorySceneController _sceneController)
     {
-        sceneController = GameObject.FindObjectOfType<StorySceneController>();
+        sceneController = _sceneController;
     }
 
     public void ToEscape(string escapeSceneName)
@@ -33,7 +33,8 @@ public class EscapeManager : MonoBehaviour
 
     public void OnEscapeButtonDown(EscapeButtonType type)
     {
-        switch(type){
+        switch (type)
+        {
             case EscapeButtonType.RIGHT:
                 ToEscape(currentEscapeScene.Right);
                 break;

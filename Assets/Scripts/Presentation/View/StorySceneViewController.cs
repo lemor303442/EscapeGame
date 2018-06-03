@@ -19,6 +19,14 @@ public class StorySceneViewController : MonoBehaviour
     [SerializeField] GameObject escapeButtonDown;
     [SerializeField] GameObject escapeButtonLeft;
 
+    // item
+    [SerializeField] GameObject itemList;
+    [SerializeField] GameObject itemListContent;
+    [SerializeField] GameObject itemListDetail;
+    [SerializeField] Image[] itemListImages;
+    [SerializeField] Image itemDetailImage;
+    [SerializeField] Text itemDetailText;
+
     public int NumOfSelectionButtons { get { return selectionButtons.Length; } }
     public bool IsCompleteDisplayText
     {
@@ -29,6 +37,7 @@ public class StorySceneViewController : MonoBehaviour
     {
         enabled = false;
         textComponentHelper = new TextComponentHelper(contentText);
+        OnItemListCloseButtonDown();
     }
 
     void Update()
@@ -212,6 +221,63 @@ public class StorySceneViewController : MonoBehaviour
     public void CompleteDisplayText()
     {
         textComponentHelper.CompleteDisplayText();
+    }
+
+    public void OnClickButtonBottonDown()
+    {
+        GameObject.FindObjectOfType<ScenarioManager>().OnClick(TouchInput.position);
+    }
+
+    public void OnItemListButtonDown()
+    {
+        // Open Item List
+        itemList.SetActive(true);
+        itemListContent.SetActive(true);
+        itemListDetail.SetActive(false);
+        UpdateItemListContent(ItemListManager.Instance.GetOwnedItemSprites());
+    }
+
+    public void OnItemListCloseButtonDown()
+    {
+        itemList.SetActive(false);
+    }
+
+    public void OnItemListContentButtonDown(int i)
+    {
+        // Show Item Detail
+        itemListContent.SetActive(false);
+        itemListDetail.SetActive(true);
+        UpdateItemDetail(
+            Resources.Load<Sprite>(ItemListManager.Instance.GetSelectedItem(i).ImagePath),
+            ItemListManager.Instance.GetSelectedItem(i).Description
+        );
+    }
+
+    public void OnItemDetailCloseButtonDown()
+    {
+        itemListContent.SetActive(true);
+        itemListDetail.SetActive(false);
+    }
+
+    void UpdateItemListContent(List<Sprite> spriteList)
+    {
+        for (int i = 0; i < itemListImages.Length; i++)
+        {
+            if (i < spriteList.Count)
+            {
+                itemListImages[i].sprite = spriteList[i];
+            }
+            else
+            {
+                itemListImages[i].sprite = Resources.Load<Sprite>("UI/no_item");
+            }
+        }
+    }
+
+    void UpdateItemDetail(Sprite sprite, string text)
+    {
+        itemDetailImage.sprite = sprite;
+        itemDetailText.text = text;
     }
 }
 

@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class ImageManager : MonoBehaviour
+public class ImageManager
 {
     StorySceneController sceneController;
 
-    public void Init()
+    public ImageManager(StorySceneController _sceneController)
     {
-        sceneController = GameObject.FindObjectOfType<StorySceneController>();
+        sceneController = _sceneController;
         LayerRepository.SortByOrder();
         sceneController.viewController.CreateLayers(LayerRepository.All);
     }
