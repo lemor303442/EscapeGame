@@ -19,6 +19,11 @@ public class StorySceneViewController : MonoBehaviour
     [SerializeField] GameObject escapeButtonDown;
     [SerializeField] GameObject escapeButtonLeft;
 
+    // item
+    [SerializeField] GameObject itemList;
+    [SerializeField] GameObject itemListContent;
+    [SerializeField] GameObject itemListDetail;
+
     public int NumOfSelectionButtons { get { return selectionButtons.Length; } }
     public bool IsCompleteDisplayText
     {
@@ -29,6 +34,7 @@ public class StorySceneViewController : MonoBehaviour
     {
         enabled = false;
         textComponentHelper = new TextComponentHelper(contentText);
+        OnItemListCloseButtonDown();
     }
 
     void Update()
@@ -213,6 +219,35 @@ public class StorySceneViewController : MonoBehaviour
     {
         textComponentHelper.CompleteDisplayText();
     }
+
+    public void OnClickButtonBottonDown()
+    {
+        GameObject.FindObjectOfType<ScenarioManager>().OnClick(TouchInput.position);
+    }
+
+    public void OnItemListButtonDown()
+    {
+        itemList.SetActive(true);
+        itemListContent.SetActive(true);
+        itemListDetail.SetActive(false);
+    }
+
+    public void OnItemListCloseButtonDown()
+    {
+        itemList.SetActive(false);
+    }
+
+    public void OnItemListContentButtonDown(int i)
+    {
+        itemListContent.SetActive(false);
+        itemListDetail.SetActive(true);
+    }
+
+    public void OnItemDetailCloseButtonDown(){
+        itemListContent.SetActive(true);
+        itemListDetail.SetActive(false);
+    }
+
 }
 
 public enum EscapeButtonType

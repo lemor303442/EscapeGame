@@ -31,9 +31,5 @@ public class StorySceneController : MonoBehaviour
     void Update()
     {
         if (isDataReady && viewController.enabled == false) viewController.enabled = true;
-        if (Input.GetMouseButtonDown(0))
-        {
-            GameObject.FindObjectOfType<ScenarioManager>().OnClick(TouchInput.position);
-        }
     }
 }
