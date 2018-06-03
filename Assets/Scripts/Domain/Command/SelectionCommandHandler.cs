@@ -33,21 +33,18 @@ public class SelectionCommandHandler : ScenarioCommandHandler
     {
         List<Scenario> selectionList = ScenarioRepository.GetSelections(options.Scenario.Id);
         // 条件を満たしていないselectionを削除
-        List<int> removeSelectionId = new List<int>();
+        List<int> removeSelectionIds = new List<int>();
         foreach (Scenario selection in selectionList)
         {
-            if (!ConditionHelper.IsAllConditionValid(options.Scenario.Arg2))
+            if (!ConditionHelper.IsAllConditionValid(selection.Arg2))
             {
-                removeSelectionId.Add(selection.Id);
-                break;
+                removeSelectionIds.Add(selection.Id);
             }
-
         }
-        foreach (int i in removeSelectionId)
+        foreach (int i in removeSelectionIds)
         {
             selectionList.RemoveAll(x => x.Id == i);
         }
-
         // Selectionを表示
         scenarioManager.ScenarioView.ShowSelections(selectionList);
     }
