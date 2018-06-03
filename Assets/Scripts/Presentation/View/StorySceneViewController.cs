@@ -27,6 +27,9 @@ public class StorySceneViewController : MonoBehaviour
     [SerializeField] Image itemDetailImage;
     [SerializeField] Text itemDetailText;
 
+    // hint
+    [SerializeField] GameObject hintModal;
+
     public int NumOfSelectionButtons { get { return selectionButtons.Length; } }
     public bool IsCompleteDisplayText
     {
@@ -38,6 +41,7 @@ public class StorySceneViewController : MonoBehaviour
         enabled = false;
         textComponentHelper = new TextComponentHelper(contentText);
         OnItemListCloseButtonDown();
+        OnHintModalNoButton();
     }
 
     void Update()
@@ -278,6 +282,21 @@ public class StorySceneViewController : MonoBehaviour
     {
         itemDetailImage.sprite = sprite;
         itemDetailText.text = text;
+    }
+
+    public void OnHintButtonDown()
+    {
+        hintModal.SetActive(true);
+    }
+
+    public void OnHintModalOkButton()
+    {
+
+    }
+
+    public void OnHintModalNoButton()
+    {
+        hintModal.SetActive(false);
     }
 }
 
