@@ -1,4 +1,6 @@
-﻿public class ItemEntity
+﻿using System.Collections.Generic;
+
+public class ItemEntity
 {
     public Item Item { get; private set; }
     public UserItem UserItem { get; private set; }
@@ -7,6 +9,19 @@
     {
         Item = _item;
         UserItem = _userItem;
+    }
+
+    public static List<ItemEntity> OwnedItems
+    {
+        get
+        {
+            List<ItemEntity> itemEntityList = new List<ItemEntity>();
+            foreach (var userItem in UserItemRepository.OwnedItems)
+            {
+                itemEntityList.Add(new ItemEntity(ItemRepository.FindById(userItem.ItemId), userItem));
+            }
+            return itemEntityList;
+        }
     }
 
     public static ItemEntity FindByUserItemId(int id)
