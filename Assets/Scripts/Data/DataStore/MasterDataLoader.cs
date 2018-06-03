@@ -9,6 +9,7 @@ public class MasterDataLoader
         AddList(dataSet, DataType.CHARACTER, TextFileHelper.Read(Const.Path.MasterData.character));
         AddList(dataSet, DataType.ESCAPE_INPUT, TextFileHelper.Read(Const.Path.MasterData.escapeInput));
         AddList(dataSet, DataType.ESCAPE_SCENE, TextFileHelper.Read(Const.Path.MasterData.escapeScene));
+        AddList(dataSet, DataType.HINT, TextFileHelper.Read(Const.Path.MasterData.hint));
         AddList(dataSet, DataType.ITEM, TextFileHelper.Read(Const.Path.MasterData.item));
         AddList(dataSet, DataType.LAYER, TextFileHelper.Read(Const.Path.MasterData.layer));
         AddList(dataSet, DataType.PARAMETER, TextFileHelper.Read(Const.Path.MasterData.parameter));
@@ -27,6 +28,7 @@ public class MasterDataLoader
         DownloadHelper.CallDownloadCsv(DataType.CHARACTER, Const.Url.character, OnDownloadComplete);
         DownloadHelper.CallDownloadCsv(DataType.ESCAPE_INPUT, Const.Url.escapeInput, OnDownloadComplete);
         DownloadHelper.CallDownloadCsv(DataType.ESCAPE_SCENE, Const.Url.escapeScene, OnDownloadComplete);
+        DownloadHelper.CallDownloadCsv(DataType.HINT, Const.Url.hint, OnDownloadComplete);
         DownloadHelper.CallDownloadCsv(DataType.ITEM, Const.Url.item, OnDownloadComplete);
         DownloadHelper.CallDownloadCsv(DataType.LAYER, Const.Url.layer, OnDownloadComplete);
         DownloadHelper.CallDownloadCsv(DataType.PARAMETER, Const.Url.parameter, OnDownloadComplete);
@@ -57,6 +59,13 @@ public class MasterDataLoader
                 {
                     if (data == csvDataList[0]) continue;
                     dataSet.EscapeSceneList.Add(new EscapeScene(int.Parse(data[0]), data[1], data[2], data[3], data[4], data[5]));
+                }
+                break;
+            case DataType.HINT:
+                foreach (string[] data in csvDataList)
+                {
+                    if (data == csvDataList[0]) continue;
+                    dataSet.HintList.Add(new Hint(int.Parse(data[0]), data[1], int.Parse(data[2]), data[3]));
                 }
                 break;
             case DataType.ITEM:
@@ -115,6 +124,9 @@ public class MasterDataLoader
                 break;
             case DataType.ESCAPE_SCENE:
                 TextFileHelper.Write(Const.Path.MasterData.escapeScene, CsvHelper.FormatListToCsv(dataSet.EscapeSceneList));
+                break;
+            case DataType.HINT:
+                TextFileHelper.Write(Const.Path.MasterData.hint, CsvHelper.FormatListToCsv(dataSet.HintList));
                 break;
             case DataType.ITEM:
                 TextFileHelper.Write(Const.Path.MasterData.item, CsvHelper.FormatListToCsv(dataSet.ItemList));

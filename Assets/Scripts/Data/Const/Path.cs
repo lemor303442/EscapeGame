@@ -11,6 +11,7 @@ namespace Const
             public static readonly string character = "Locals/Csv/MasterData/Characters.csv";
             public static readonly string escapeInput = "Locals/Csv/MasterData/EscapeInputs.csv";
             public static readonly string escapeScene = "Locals/Csv/MasterData/EscapeScenes.csv";
+            public static readonly string hint = "Locals/Csv/MasterData/Hint.csv";
             public static readonly string item = "Locals/Csv/MasterData/Items.csv";
             public static readonly string layer = "Locals/Csv/MasterData/Layers.csv";
             public static readonly string parameter = "Locals/Csv/MasterData/Parameters.csv";
